@@ -164,7 +164,7 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('proposal');
-  const [profile, setProfile] = useState('');
+  const [profile, setProfile] = useState('valorant');
   const [savedRuns, setSavedRuns] = useState([]);
   const [content, setContent] = useState(null);
   const [savedError, setSavedError] = useState('');
@@ -181,6 +181,11 @@ function App() {
         const [weapon, field] = path.split('.');
         defaults[weapon] = { ...defaults[weapon], [field]: data.weapons[weapon][field] };
       });
+      if (data.profile === 'valorant' && defaults.spectre && 'damage' in defaults.spectre) {
+        defaults.spectre.damage = 27;
+      } else if (data.profile === 'openfire' && defaults.smg && 'damage' in defaults.smg) {
+        defaults.smg.damage = 13;
+      }
       setForm(defaults);
     }).catch(reason => { if (!cancelled) setError(reason.message); });
     return () => { cancelled = true; };

@@ -11,7 +11,7 @@ npm run build
 python -m ragent_openfire.web
 ```
 
-Open http://127.0.0.1:8765. The existing OpenFire profile remains the default; select the VALORANT profile in the dashboard or API to use the pinned 10 m Vandal/Spectre demo. For the profile's source, exact damage context and simulator limitations, see [CONTENT_PROFILE.md](CONTENT_PROFILE.md). Rebuild the profile and asset manifest offline with `python scripts/ingest_valorant.py`.
+Open http://127.0.0.1:8765. The dashboard opens with the VALORANT demo preset (Spectre body damage 26 → 27) ready to run. The API defaults to OpenFire when no profile is supplied; the dashboard also offers an OpenFire preset. For the profile's source, exact damage context and simulator limitations, see [CONTENT_PROFILE.md](CONTENT_PROFILE.md). Rebuild the profile and asset manifest offline with `python scripts/ingest_valorant.py`.
 
 Gemini is enabled by default and runs when `GEMINI_API_KEY` is available to the server, from the server process environment, the current checkout’s `.env`, or, for a Git worktree, the primary checkout’s `.env`, in that order. Only `GEMINI_API_KEY` is loaded from these files. Keep that file private and out of version control. Never put credentials in a request payload. Set `gemini_enabled` to `false` in a run request to force fallback. The server uses `gemini-3.5-flash-lite` with bounded calls; missing credentials, a timeout, malformed response, or another provider failure uses deterministic suggestions and explanations and reports fallback status. Saved completed reports can be read without credentials. Model output suggests candidates and explains results; simulation, validation and verification remain in code.
 
