@@ -2,6 +2,7 @@
 import html
 import json
 from pathlib import Path
+from .run_store import atomic_write
 
 STYLE='''
 *{box-sizing:border-box}body{margin:0;background:#f2efe9;color:#181818;font:16px/1.5 Arial,sans-serif}
@@ -76,7 +77,7 @@ def html_report(report,path):
     <section><h2>Per-matchup win rate + time-to-kill</h2><div class="scroll"><table><thead><tr><th>Weapon pairing</th><th>Range</th><th>Bot style</th><th>Before A win%</th><th>After A win%</th><th>Before TTK (s)</th><th>After TTK (s)</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
     <section><h2>Design interpretation</h2><p>A narrow 40–60% policy is applied only to explicitly designated peer matchups. Shotguns and sniper rifles are not required to win half of every range-dependent encounter. Every outcome depends on this simplified aim-and-movement model; human retention must be evaluated separately.</p></section>
     </main><footer>RAGENT · GitHub workflow proof · Synthetic evaluation · Do not present illustration as measured Riot data.</footer></body></html>'''
-    target=Path(path);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(content,encoding='utf-8')
+    target=Path(path);target.parent.mkdir(parents=True,exist_ok=True);atomic_write(target, content)
     return target
 
 
@@ -114,6 +115,8 @@ def proposal_html_report(report,path):
     final_stats=html.escape(format_json(recommendation['final_stats']))
     recommendation_details=html.escape(format_json(recommendation['verification']))
     recommendation_status='PASSED' if recommendation['candidate_accepted'] else 'NEEDS REVIEW'
+    explanation = html.escape(format_json(report.get('explanation', {})))
+    model_status = html.escape(format_json(report.get('explanation_model', {})))
     content=f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAGENT Proposed Change Report</title><style>{STYLE}</style></head>
     <body><header><div class="tag">THE RAGENTS / DEVHACKS 2026</div><h1>RAGENT</h1><p>Proposed change evaluation</p></header><main>
     <p class="warn">Synthetic stat-level simulation only. This is not OpenFire 3D gameplay, Riot gameplay data, or proof of player retention.</p>
@@ -122,7 +125,8 @@ def proposal_html_report(report,path):
     <section><h2>Developer proposal and verification</h2><div class="summary"><div><h3>Proposed stat changes</h3><pre>{changes}</pre></div><div><h3>Training + held-out guardrails</h3><pre>{details}</pre></div></div></section>
     <section><h2>Final agent recommendation</h2><p>Agent mode: <strong>{html.escape(recommendation['agent_mode'])}</strong> · {recommendation['search_budget']} bounded candidates tested · Recommendation: <strong>{recommendation_status}</strong></p><div class="summary"><div><h3>Additional adjustment to developer proposal</h3><pre>{recommended_changes}</pre></div><div><h3>Recommended final stats</h3><pre>{final_stats}</pre></div><div><h3>Recommendation held-out checks</h3><pre>{recommendation_details}</pre></div></div><p>Final stats are the developer's proposed values plus the selected agent adjustment. An empty adjustment means the agent selected no additional change.</p></section>
     <section><h2>Per-matchup win rate and median TTK</h2><div class="scroll"><table><thead><tr><th>Weapon pairing</th><th>Range</th><th>Bot style</th><th>Before A win%</th><th>After A win%</th><th>Before median TTK (s)</th><th>After median TTK (s)</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
+    <section><h2>Explanation and model status</h2><pre>{explanation}</pre><pre>{model_status}</pre></section>
     <section><h2>Metric definitions</h2><ul><li>Win rate: A wins plus half of draws, divided by duels, with both starting orders paired for each seed.</li><li>Median TTK: median elimination time among decisive duels in each matchup; summary mean is the mean of matchup medians.</li><li>First-shooter advantage: absolute distance of each matchup's first-shooter win rate from 50%, averaged across matchups.</li><li>Maximum matchup spread: largest range between weapon win rates within any fixed distance and bot style.</li><li>Guardrails check configured neutral-matchup bands, first-shooter threshold, and off-target regression limit.</li></ul></section>
     </main><footer>RAGENT · Developer-proposed change QA · Approximate seeded simulation only.</footer></body></html>'''
-    target=Path(path);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(content,encoding='utf-8')
+    target=Path(path);target.parent.mkdir(parents=True,exist_ok=True);atomic_write(target, content)
     return target

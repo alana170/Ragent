@@ -1,0 +1,24 @@
+{
+  "profile_id": "valorant",
+  "source": "Valorant-API (unofficial); game artwork \u00a9 Riot Games",
+  "retrieved_at": "2026-11-14T22:35:28Z",
+  "version": "13.10.00.5893614",
+  "assets": {
+    "vandal": {
+      "path": "vandal.png",
+      "url": "/assets/vandal.png",
+      "source_url": "https://media.valorant-api.com/weapons/9c82e19d-4575-0200-1a81-3eacf00cf872/displayicon.png",
+      "sha256": "07c9a2d4dc6b7926d023163237dd508104be3fec2b5712cdc1a5301bb294457d",
+      "content_type": "image/png",
+      "label": "Vandal"
+    },
+    "spectre": {
+      "path": "spectre.png",
+      "url": "/assets/spectre.png",
+      "source_url": "https://media.valorant-api.com/weapons/462080d1-4035-2937-7c09-27aa2a5c27a7/displayicon.png",
+      "sha256": "43d456f579a9e90e1fcb35838d53c9218209491bb7afd3fb17c851c975b5529f",
+      "content_type": "image/png",
+      "label": "Spectre"
+    }
+  }
+}

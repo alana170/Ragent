@@ -6,3 +6,5 @@ results/*
 !results/example.csv
 .pytest_cache/
 .venv/
+
+.env

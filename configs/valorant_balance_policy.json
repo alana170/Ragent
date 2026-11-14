@@ -1,0 +1,39 @@
+{
+  "ranges": [
+    10
+  ],
+  "strategies": [
+    "aggressive",
+    "flanker"
+  ],
+  "weapons": [
+    "vandal",
+    "spectre"
+  ],
+  "search_seeds": 24,
+  "verification_seeds": 48,
+  "verification_seed_offset": 100000,
+  "neutral_matchups": [
+    {
+      "a": "vandal",
+      "b": "spectre",
+      "range": 10,
+      "strategy": "aggressive",
+      "min_rate": 0.4,
+      "max_rate": 0.6
+    }
+  ],
+  "max_first_shooter_edge": 0.4,
+  "max_off_target_regression": 0.2,
+  "allowed_parameters": {
+    "spectre.fire_rate": [
+      10,
+      16
+    ],
+    "spectre.damage": [
+      20,
+      32
+    ]
+  },
+  "target_weapon": "spectre"
+}
