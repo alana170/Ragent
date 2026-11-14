@@ -183,20 +183,19 @@ function App() {
       });
       if (data.profile === 'valorant' && defaults.spectre && 'damage' in defaults.spectre) {
         defaults.spectre.damage = 27;
-      } else if (data.profile === 'openfire' && defaults.smg && 'damage' in defaults.smg) {
-        defaults.smg.damage = 13;
+
       }
       setForm(defaults);
     }).catch(reason => { if (!cancelled) setError(reason.message); });
     return () => { cancelled = true; };
   }, [profile]);
-  const refreshRuns = () => api.runs().then(items => { setSavedRuns(items); setSavedError(''); }).catch(() => setSavedError('Saved runs are unavailable on this server.'));
+  const refreshRuns = () => api.runs().then(items => { setSavedRuns(items.filter(item => item.profile === 'valorant')); setSavedError(''); }).catch(() => setSavedError('Saved runs are unavailable on this server.'));
   useEffect(() => { refreshRuns(); api.content().then(setContent).catch(() => setContent(null)); }, []);
   const openRun = async id => {
     if (!id) return;
     try {
       const selected = await api.run(id);
-      setProfile(selected.profile || 'openfire'); setRun(selected); setEvents(selected.events || []); setError(''); setRecorded(true);
+      setRun(selected); setEvents(selected.events || []); setError(''); setRecorded(true);
       if (selected.status !== 'complete' && selected.status !== 'failed' && selected.status !== 'interrupted') { setBusy(true); await pollRun(id); }
     } catch (reason) { setBusy(false); setError(reason.message); }
   };
@@ -269,11 +268,9 @@ function App() {
       <div className="page-intro"><div><div className="eyebrow">GAME BALANCE QUALITY ASSURANCE</div><h1>Balance Lab</h1><p>Explore a proposed change, test the ripple effects, and leave with a verified recommendation.</p></div>
         <div className="run-badge"><FlaskConical size={16} /><span>Stat-level simulation</span></div>
       </div>
-      <div className="context-bar"><label>Content profile <select value={profile || config.profile || ''} disabled={busy} onChange={event => { setRun(null); setEvents([]); setProfile(event.target.value); }}>
-        {(config.profiles || [config.profile || 'openfire']).map(item => <option key={item} value={item}>{prettify(item)}</option>)}
-      </select></label><label>Saved runs <select value={run?.id || ''} disabled={busy} onChange={event => openRun(event.target.value)}><option value="">Select a run</option>{savedRuns.map(item => <option key={item.id} value={item.id}>{item.profile || 'openfire'} · {item.status} · {item.id.slice(0, 8)}</option>)}</select></label><span>{savedError || (content && (profile || config.profile) === 'valorant' ? `${content.source} · ${content.version || 'version unavailable'} · retrieved ${content.retrieved_at || 'unknown'}` : 'Simulation profile and source data supplied by the server.')}</span></div>
+      <div className="context-bar"><strong>VALORANT weapon lab</strong><label>Saved runs <select value={run?.id || ''} disabled={busy} onChange={event => openRun(event.target.value)}><option value="">Select a run</option>{savedRuns.map(item => <option key={item.id} value={item.id}>{item.status} · {item.id.slice(0, 8)}</option>)}</select></label><span>{savedError || (content ? `${content.source} · ${content.version || 'version unavailable'} · retrieved ${content.retrieved_at || 'unknown'}` : 'Pinned source data supplied by the server.')}</span></div>
       {config.source && <details className="source-details"><summary>Profile source and model assumptions</summary><p>{config.source.source || 'Source unavailable'} {config.source.version && `· ${config.source.version}`} {config.source.retrieved_at && `· retrieved ${config.source.retrieved_at}`}</p>{config.source.damage_context && <p>Damage context: {config.source.damage_context}</p>}{config.source.assumptions?.length > 0 && <ul>{config.source.assumptions.map(item => <li key={item}>{item}</li>)}</ul>}</details>}
-      <div className="scope-banner"><div className="scope-icon"><CircleHelp size={17} /></div><p><strong>Model scope</strong><span>Seeded weapon-stat duels approximate aim, cadence, damage, reload, range, and movement. This is not a full 3D OpenFire match or player-retention measurement.</span></p><span className="scope-detail">{Object.keys(config.weapons).length} weapons <i /> {config.ranges.join(' / ')}m <i /> {config.strategies.length} playstyles</span></div>
+      <div className="scope-banner"><div className="scope-icon"><CircleHelp size={17} /></div><p><strong>Model scope</strong><span>Seeded weapon-stat duels approximate aim, cadence, damage, reload, range, and movement. This is not a full VALORANT match or player-retention measurement.</span></p><span className="scope-detail">{Object.keys(config.weapons).length} weapons <i /> {config.ranges.join(' / ')}m <i /> {config.strategies.length} playstyles</span></div>
 
       <div className="dashboard-grid">
         <div className="main-column">

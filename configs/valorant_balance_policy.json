@@ -33,6 +33,30 @@
     "spectre.damage": [
       20,
       32
+    ],
+    "spectre.mag_size": [
+      20,
+      40
+    ],
+    "spectre.reload_time": [
+      1.5,
+      3.0
+    ],
+    "vandal.fire_rate": [
+      7.5,
+      12
+    ],
+    "vandal.damage": [
+      32,
+      48
+    ],
+    "vandal.mag_size": [
+      15,
+      35
+    ],
+    "vandal.reload_time": [
+      1.75,
+      3.25
     ]
   },
   "target_weapon": "spectre"

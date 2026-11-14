@@ -26,11 +26,11 @@ def _change(weapons,path,value,bounds):
 def _heuristic_candidates(weapons,policy):
     targets=set(policy.get('target_weapons',[policy.get('target_weapon')]))
     candidates=[]
-    for path,(lo,hi) in policy['allowed_parameters'].items():
-        weapon,field=path.split('.',1)
-        if weapon not in targets: continue
-        old=weapons[weapon][field]
-        for factor in (.95,.9,.85,.8,.79,.78,.77,.76,.75,.7,1.05,1.1,1.2):
+    for factor in (.95,1.05,.9,1.1,.85,1.2,.8,.79,.78,.77,.76,.75,.7):
+        for path,(lo,hi) in policy['allowed_parameters'].items():
+            weapon,field=path.split('.',1)
+            if weapon not in targets: continue
+            old=weapons[weapon][field]
             val=min(hi,max(lo,old*factor))
             if isinstance(old,int): val=int(round(val))
             if val!=old: candidates.append({'changes':{path:val},'rationale':f'Test a {factor:.0%} scaling of {path}.'})

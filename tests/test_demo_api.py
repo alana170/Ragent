@@ -78,3 +78,15 @@ def test_explanation_rejects_unverified_or_invented_numeric_claims(monkeypatch):
         explanation, metadata = gemini_client.explain(facts)
         assert metadata['status'] == 'fallback'
         assert explanation['facts'] == facts
+
+
+def test_valorant_editable_stats_are_bounded_and_search_covers_both_weapons():
+    from ragent_openfire.agent import _heuristic_candidates
+    _, weapons, policy = web.load_inputs(profile="valorant")
+    fields = {"damage", "fire_rate", "mag_size", "reload_time"}
+    assert set(policy["allowed_parameters"]) == {f"{weapon}.{field}" for weapon in ("vandal", "spectre") for field in fields}
+    changed = web.apply_proposed_changes(weapons, {"vandal": {"damage": 41}, "spectre": {"mag_size": 31}}, policy["allowed_parameters"])
+    assert changed["vandal"]["damage"] == 41 and changed["spectre"]["mag_size"] == 31
+    candidates = _heuristic_candidates(changed, dict(policy, target_weapons=["vandal", "spectre"]))[:23]
+    assert {next(iter(c["changes"])).split(".")[0] for c in candidates} == {"vandal", "spectre"}
+    assert {next(iter(c["changes"])).split(".")[1] for c in candidates} == fields
