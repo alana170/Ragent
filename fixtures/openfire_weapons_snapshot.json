@@ -1,0 +1,10 @@
+{
+  "source": "OpenFire WeaponDB.WEAPONS (snapshot of upstream commit 7259140487946532af8310723392cca34a4fb0bb)",
+  "weapons": {
+    "rifle": {"damage": 17, "fire_rate": 9, "mag_size": 30, "reserve": 120, "reload_time": 1.9, "spread_deg": 1.3, "aim_spread_deg": 0.3, "range": 120, "pellets": 1},
+    "smg": {"damage": 12, "fire_rate": 14, "mag_size": 25, "reserve": 150, "reload_time": 1.6, "spread_deg": 2.2, "aim_spread_deg": 0.8, "range": 80, "pellets": 1},
+    "shotgun": {"damage": 9, "fire_rate": 1.2, "mag_size": 6, "reserve": 36, "reload_time": 2.4, "spread_deg": 6.0, "aim_spread_deg": 4.0, "range": 35, "pellets": 9},
+    "sniper": {"damage": 95, "fire_rate": 1, "mag_size": 5, "reserve": 30, "reload_time": 2.8, "spread_deg": 0.4, "aim_spread_deg": 0.02, "range": 300, "pellets": 1},
+    "pistol": {"damage": 24, "fire_rate": 5, "mag_size": 12, "reserve": 72, "reload_time": 1.3, "spread_deg": 4.0, "aim_spread_deg": 1.8, "range": 90, "pellets": 1}
+  }
+}

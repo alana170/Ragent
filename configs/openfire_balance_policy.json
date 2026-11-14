@@ -1,0 +1,48 @@
+{
+  "ranges": [
+    5,
+    15,
+    35
+  ],
+  "strategies": [
+    "aggressive",
+    "defensive",
+    "flanker"
+  ],
+  "weapons": [
+    "rifle",
+    "smg",
+    "shotgun",
+    "sniper"
+  ],
+  "search_seeds": 24,
+  "verification_seeds": 48,
+  "verification_seed_offset": 100000,
+  "neutral_matchups": [
+    {
+      "a": "rifle",
+      "b": "smg",
+      "range": 15,
+      "strategy": "aggressive",
+      "min_rate": 0.4,
+      "max_rate": 0.6
+    }
+  ],
+  "max_first_shooter_edge": 0.15,
+  "max_off_target_regression": 0.5,
+  "allowed_parameters": {
+    "smg.fire_rate": [
+      8,
+      22
+    ],
+    "smg.damage": [
+      8,
+      17
+    ],
+    "shotgun.pellets": [
+      6,
+      14
+    ]
+  },
+  "target_weapon": "smg"
+}

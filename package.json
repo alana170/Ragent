@@ -1,0 +1,16 @@
+{
+  "name": "ragent-openfire-developer-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "esbuild frontend/src.jsx --bundle --minify --outfile=web/app.js --loader:.jsx=jsx"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
