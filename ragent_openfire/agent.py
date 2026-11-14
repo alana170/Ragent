@@ -1,15 +1,11 @@
-"""Bounded agentic search, grounded in measured duels and held-out verification.
+"""Bounded search with programmatic eligibility and independent verification.
 
-When OPENAI_API_KEY is set, an LLM generates bounded hypotheses. Without a key,
-this uses a transparently labeled deterministic candidate generator, not an LLM.
-Neither path is permitted to edit the verifier, thresholds, or arbitrary files.
+Optional model suggestions are hypotheses; deterministic code validates and scores
+all candidates, and a disjoint holdout determines the final verdict.
 """
 from __future__ import annotations
 from copy import deepcopy
-import json
 import math
-import os
-import urllib.request
 from .simulation import run_suite, balance_violations, lookup, regression_violations
 
 
@@ -18,7 +14,7 @@ def _change(weapons,path,value,bounds):
     if path not in bounds or weapon not in weapons or field not in weapons[weapon]:
         raise ValueError(f'Unapproved parameter: {path}')
     lo,hi=bounds[path]
-    if not isinstance(value,(int,float)) or not math.isfinite(value) or not lo <= value <= hi:
+    if isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or not lo <= value <= hi:
         raise ValueError(f'Invalid value {path}: {value}')
     original=weapons[weapon][field]
     if isinstance(original,int):
@@ -30,11 +26,11 @@ def _change(weapons,path,value,bounds):
 def _heuristic_candidates(weapons,policy):
     targets=set(policy.get('target_weapons',[policy.get('target_weapon')]))
     candidates=[]
-    for path,(lo,hi) in policy['allowed_parameters'].items():
-        weapon,field=path.split('.',1)
-        if weapon not in targets: continue
-        old=weapons[weapon][field]
-        for factor in (.95,.9,.85,.8,.79,.78,.77,.76,.75,.7,1.05,1.1,1.2):
+    for factor in (.95,1.05,.9,1.1,.85,1.2,.8,.79,.78,.77,.76,.75,.7):
+        for path,(lo,hi) in policy['allowed_parameters'].items():
+            weapon,field=path.split('.',1)
+            if weapon not in targets: continue
+            old=weapons[weapon][field]
             val=min(hi,max(lo,old*factor))
             if isinstance(old,int): val=int(round(val))
             if val!=old: candidates.append({'changes':{path:val},'rationale':f'Test a {factor:.0%} scaling of {path}.'})
@@ -50,20 +46,6 @@ def _heuristic_candidates(weapons,policy):
                 candidates.append({'changes':{p1:xx,p2:yy},'rationale':'Test a small paired adjustment to interacting stats.'})
     unique={tuple(sorted(c['changes'].items())):c for c in candidates}
     return list(unique.values())
-
-
-def _llm_candidates(weapons,policy,observed):
-    api_key=os.getenv('OPENAI_API_KEY')
-    if not api_key: return None
-    prompt={'weapon_stats':weapons, 'policy':policy,'observed_neutral_matchup':observed,
-        'task':'Return a JSON object with key candidates (array), each {changes: {"weapon.field": number}, rationale: string}. Propose up to 5 small and targeted balance edits; never modify policy, test code, or unauthorized parameters.'}
-    body={'model':os.getenv('OPENAI_MODEL','gpt-4o-mini'),'response_format':{'type':'json_object'},
-          'messages':[{'role':'system','content':'You are a game balance QA engineer. Output JSON only. Bounds are mandatory.'},
-                      {'role':'user','content':json.dumps(prompt)}]}
-    req=urllib.request.Request('https://api.openai.com/v1/chat/completions',data=json.dumps(body).encode(),
-        headers={'Authorization':'Bearer '+api_key, 'Content-Type':'application/json'})
-    with urllib.request.urlopen(req,timeout=30) as response: reply=json.load(response)
-    return json.loads(reply['choices'][0]['message']['content'])['candidates'][:5]
 
 
 def _regression(baseline,candidate,policy):
@@ -90,61 +72,114 @@ def _violation_cost(report,policy):
     return cost
 
 
-def optimize(weapons,policy,progress=None,allow_llm=True):
-    baseline=deepcopy(weapons)
-    train_seeds=range(int(policy.get('search_seeds',24)))
-    heldout_seeds=range(int(policy.get('verification_seed_offset',100000)),
-                        int(policy.get('verification_seed_offset',100000))+int(policy.get('verification_seeds',48)))
-    original_train=run_suite(baseline,policy,train_seeds)
-    observed=[{'target':t,'rate':lookup(original_train['rows'],t['a'],t['b'],t['range'],t['strategy'])} for t in policy['neutral_matchups']]
-    mode='llm' if allow_llm and os.getenv('OPENAI_API_KEY') else 'heuristic_no_llm'
-    try:
-        proposals=_llm_candidates(baseline,policy,observed) if mode=='llm' else _heuristic_candidates(baseline,policy)
-    except Exception as e:
-        mode='heuristic_llm_failed'
-        proposals=_heuristic_candidates(baseline,policy)
-        error=f'LLM unavailable: {type(e).__name__}'
-    else: error=None
-    attempts=[]
-    candidates=proposals[:28]
-    for index,candidate in enumerate(candidates,1):
+def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider=None,
+             original_baseline=None, seed_offset=0):
+    """Search discovery data, freeze the eligible choice, then verify independently."""
+    baseline = deepcopy(weapons)
+    original = deepcopy(original_baseline if original_baseline is not None else weapons)
+    count = int(policy.get('search_seeds', 24))
+    heldout_count = int(policy.get('verification_seeds', 48))
+    train_seeds = range(seed_offset, seed_offset + count)
+    holdout_start = seed_offset + int(policy.get('final_verification_seed_offset', 200000))
+    heldout_seeds = range(holdout_start, holdout_start + heldout_count)
+    if set(train_seeds).intersection(heldout_seeds):
+        raise ValueError('Discovery and final verification seeds must be disjoint')
+    original_train = run_suite(original, policy, train_seeds, trace_one=False)
+    proposal_train = run_suite(baseline, policy, train_seeds, trace_one=False)
+    metadata = {'status': 'fallback', 'reason': 'disabled' if not allow_llm else 'unavailable'}
+    suggestions = []
+    if allow_llm and suggestion_provider:
         try:
-            patch=deepcopy(baseline)
-            for path,value in candidate['changes'].items():
-                value=_change(baseline,path,value,policy['allowed_parameters'])
-                w,k=path.split('.',1);patch[w][k]=value
-            report=run_suite(patch,policy,train_seeds,trace_one=False)
-            issues=balance_violations(report,policy)
-            regress=_regression(original_train,report,policy)
-            # Aim for the middle of designer-approved neutral bands, leaving a buffer
-            # against sampling noise. The constraints themselves stay independent.
-            midpoint_error = sum(abs(lookup(report['rows'], t['a'],t['b'],t['range'],t['strategy']) - (t['min_rate']+t['max_rate'])/2) for t in policy['neutral_matchups'])
-            score=10*_violation_cost(report,policy)+2*len(regress)+2*midpoint_error+0.08*_distance(candidate['changes'],baseline)
-            attempts.append({'changes':candidate['changes'],'rationale':candidate.get('rationale',''),
-                             'score':round(score,6),'search_violations':issues,'search_regressions':regress})
-        except (ValueError, KeyError, TypeError) as exc:
-            attempts.append({'changes':candidate.get('changes'),'error':str(exc),'score':math.inf})
+            suggestions, metadata = suggestion_provider(deepcopy(baseline), deepcopy(policy), deepcopy(proposal_train))
+            if not isinstance(suggestions, list) or not isinstance(metadata, dict):
+                raise ValueError('Invalid suggestion response')
+            suggestions = suggestions[:4]
+        except Exception as exc:
+            suggestions = []
+            metadata = {'status': 'fallback', 'reason': type(exc).__name__}
+    mode = 'gemini' if metadata.get('status') == 'live' else 'heuristic_no_llm'
+    proposals = [dict(c, source='gemini') if isinstance(c, dict) else c for c in suggestions]
+    proposals += [dict(c, source='heuristic') for c in _heuristic_candidates(baseline, policy)]
+    proposals.insert(0, {'changes': {}, 'rationale': 'Unchanged proposal comparator.', 'source': 'comparator'})
+    attempts, seen = [], set()
+    budget = max(1, min(28, int(policy.get('candidate_budget', 28))))
+    for index, candidate in enumerate(proposals[:budget], 1):
+        entry = {'id': f'candidate-{index}', 'source': candidate.get('source', 'gemini') if isinstance(candidate, dict) else 'gemini',
+                 'changes': candidate.get('changes') if isinstance(candidate, dict) else None,
+                 'rationale': candidate.get('rationale', '') if isinstance(candidate, dict) else '', 'eligible': False}
+        try:
+            changes = entry['changes']
+            if not isinstance(changes, dict) or (not changes and entry['source'] != 'comparator'):
+                raise ValueError('Candidate changes must be a non-empty object')
+            if not isinstance(entry['rationale'], str):
+                raise ValueError('Candidate rationale must be text')
+            patch, normalized = deepcopy(baseline), {}
+            for path, value in changes.items():
+                if not isinstance(path, str) or '.' not in path:
+                    raise ValueError('Invalid parameter path')
+                value = _change(baseline, path, value, policy['allowed_parameters'])
+                w, k = path.split('.', 1)
+                patch[w][k] = value
+                normalized[path] = value
+            key = tuple(sorted(normalized.items()))
+            if key in seen:
+                raise ValueError('Duplicate candidate')
+            seen.add(key)
+            entry['changes'] = normalized
+            report = proposal_train if not normalized else run_suite(patch, policy, train_seeds, trace_one=False)
+            issues = balance_violations(report, policy)
+            regress = _regression(original_train, report, policy)
+            proposal_regress = _regression(proposal_train, report, policy)
+            midpoint_error = sum(abs(lookup(report['rows'], t['a'], t['b'], t['range'], t['strategy']) - (t['min_rate'] + t['max_rate']) / 2) for t in policy['neutral_matchups'])
+            score = 10 * _violation_cost(report, policy) + 2 * len(regress) + 2 * midpoint_error + 0.08 * _distance(normalized, baseline)
+            entry.update(score=round(score, 6), search_violations=issues, search_regressions=regress,
+                         proposal_search_regressions=proposal_regress, metrics=report,
+                         eligible=not issues and not regress and not proposal_regress)
+        except (ValueError, KeyError, TypeError, OverflowError) as exc:
+            # Invalid model values must not poison JSON persistence with NaN/Infinity.
+            entry['changes'] = {str(k): (v if isinstance(v, (str, bool, int)) or
+                                isinstance(v, float) and math.isfinite(v) else repr(v))
+                                for k, v in changes.items()} if isinstance(changes, dict) else None
+            if not isinstance(entry['rationale'], str):
+                entry['rationale'] = ''
+            entry['error'] = str(exc)
+        attempts.append(entry)
         if progress:
-            progress(f'Agent search {index}/{len(candidates)} candidates')
-    viable=[a for a in attempts if math.isfinite(a.get('score',math.inf))]
-    viable.sort(key=lambda item:item['score'])
-    chosen=viable[0] if viable else None
-    modified=deepcopy(baseline)
+            progress(f'Agent search {index}/{min(len(proposals), budget)} candidates')
+    if metadata.get('status') == 'live':
+        metadata['validated_response'] = [{'id': a['id'], 'changes': a['changes'], 'rationale': a['rationale']}
+                                          for a in attempts if a['source'] == 'gemini' and 'error' not in a]
+    if metadata.get('status') == 'live' and not metadata.get('validated_response'):
+        metadata.update(status='fallback', reason='invalid_model_output')
+        mode = 'heuristic_no_llm'
+    comparator = attempts[0]
+    viable = [a for a in attempts[1:] if a['eligible'] and
+              (not comparator['eligible'] or a['score'] < comparator['score'])]
+    viable.sort(key=lambda item: item['score'])
+    chosen = viable[0] if viable else None
+    modified = deepcopy(baseline)
     if chosen:
-        for path,val in chosen['changes'].items():
-            w,k=path.split('.',1);modified[w][k]=val
+        for path, val in chosen['changes'].items():
+            w, k = path.split('.', 1)
+            modified[w][k] = val
     if progress:
         progress('Agent held-out verification: running independent seeds')
-    original_verify=run_suite(baseline,policy,heldout_seeds,trace_one=False)
-    candidate_verify=run_suite(modified,policy,heldout_seeds,trace_one=False)
-    heldout_issues=balance_violations(candidate_verify,policy)
-    heldout_regress=_regression(original_verify,candidate_verify,policy)
-    approved=bool(chosen and not heldout_issues and not heldout_regress)
+    original_verify = run_suite(original, policy, heldout_seeds, trace_one=False)
+    proposal_verify = run_suite(baseline, policy, heldout_seeds, trace_one=False)
+    candidate_verify = run_suite(modified, policy, heldout_seeds, trace_one=False)
+    issues = balance_violations(candidate_verify, policy)
+    regress = _regression(original_verify, candidate_verify, policy)
+    proposal_regress = _regression(proposal_verify, candidate_verify, policy)
+    approved = bool(chosen and not issues and not regress and not proposal_regress)
     if progress:
         progress(f'Agent recommendation verification {"PASSED" if approved else "NEEDS REVIEW"}')
-    return {'agent_mode':mode,'llm_error':error,'search_budget':len(attempts),
-            'chosen':chosen,'candidate_accepted':approved,
-            'verification':{'passed':approved,'violations':heldout_issues,'regressions':heldout_regress,
-                            'search_seed_count':len(train_seeds),'heldout_seed_count':len(heldout_seeds)},
-            'before':original_verify,'after':candidate_verify,'patched_weapons':modified,
-            'candidates':attempts,'caveat':'Approximate seeded FPS duels, not real VALORANT or OpenFire 3D navigation tests.'}
+    return {'agent_mode': mode, 'llm_error': metadata.get('reason'), 'model_status': metadata,
+            'search_budget': len(attempts), 'chosen': chosen, 'candidate_accepted': approved,
+            'verification': {'passed': approved, 'violations': issues, 'regressions': regress,
+                             'proposal_regressions': proposal_regress,
+                             'search_seed_count': len(train_seeds), 'heldout_seed_count': len(heldout_seeds),
+                             'discovery_seeds': {'start': train_seeds.start, 'end_exclusive': train_seeds.stop},
+                             'final_seeds': {'start': heldout_seeds.start, 'end_exclusive': heldout_seeds.stop}},
+            'before': original_verify, 'proposal_before': proposal_verify, 'after': candidate_verify,
+            'patched_weapons': modified, 'candidates': attempts,
+            'caveat': 'Approximate seeded FPS duels, not real VALORANT or OpenFire 3D navigation tests.'}

@@ -10,7 +10,12 @@ import math
 from pathlib import Path
 import threading
 import uuid
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs
+import mimetypes
+
+from . import gemini_client
+from .run_store import save_run, load_runs, atomic_write
+from .replay import make_replays
 
 from .reports import proposal_html_report
 from .agent import optimize
@@ -24,9 +29,16 @@ RUNS = {}
 ACTIVE_RUN = None
 
 
-def load_inputs(weapons_path=None, policy_path=None):
-    source_path = Path(weapons_path) if weapons_path else ROOT / 'fixtures/openfire_weapons_snapshot.json'
-    config_path = Path(policy_path) if policy_path else ROOT / 'configs/openfire_balance_policy.json'
+PROFILES = {
+    "openfire": ("fixtures/openfire_weapons_snapshot.json", "configs/openfire_balance_policy.json"),
+    "valorant": ("fixtures/valorant_weapons_snapshot.json", "configs/valorant_balance_policy.json"),
+}
+
+def load_inputs(weapons_path=None, policy_path=None, profile="openfire"):
+    if profile not in PROFILES:
+        raise ValueError("Unknown profile")
+    source_path = Path(weapons_path) if weapons_path else ROOT / PROFILES[profile][0]
+    config_path = Path(policy_path) if policy_path else ROOT / PROFILES[profile][1]
     weapon_document = json.loads(source_path.read_text(encoding='utf-8'))
     policy = json.loads(config_path.read_text(encoding='utf-8'))
     if not isinstance(weapon_document, dict) or not isinstance(policy, dict):
@@ -70,16 +82,16 @@ def apply_proposed_changes(weapons, changes, allowed_parameters):
     return updated
 
 
-def evaluate_proposal(weapons, policy, changes, matches, progress=None):
+def evaluate_proposal(weapons, policy, changes, matches, progress=None, profile="openfire", seed_offset=0, gemini_enabled=True):
     if isinstance(matches, bool) or not isinstance(matches, int) or not 1 <= matches <= 100:
         raise ValueError('matches must be a whole number from 1 to 100')
     proposed = apply_proposed_changes(weapons, changes, policy['allowed_parameters'])
     log_progress = progress or (lambda _message: None)
     phases = [
-        ('Training baseline', weapons, range(matches)),
-        ('Training proposal', proposed, range(matches)),
-        ('Held-out baseline', weapons, range(100000, 100000 + matches)),
-        ('Held-out proposal', proposed, range(100000, 100000 + matches)),
+        ('Training baseline', weapons, range(seed_offset, seed_offset + matches)),
+        ('Training proposal', proposed, range(seed_offset, seed_offset + matches)),
+        ('Held-out baseline', weapons, range(seed_offset + 100000, seed_offset + 100000 + matches)),
+        ('Held-out proposal', proposed, range(seed_offset + 100000, seed_offset + 100000 + matches)),
     ]
     results = {}
     for phase, config, seeds in phases:
@@ -104,7 +116,8 @@ def evaluate_proposal(weapons, policy, changes, matches, progress=None):
     recommendation = optimize(
         proposed, recommendation_policy,
         progress=log_progress,
-        allow_llm=False,
+        allow_llm=gemini_enabled, original_baseline=weapons, seed_offset=seed_offset,
+        suggestion_provider=(lambda w, p, d: gemini_client.suggest(w, p, d, changes, profile)) if gemini_enabled else None,
     )
     relevant_paths = set()
     if recommendation.get('chosen'):
@@ -119,14 +132,32 @@ def evaluate_proposal(weapons, policy, changes, matches, progress=None):
         'agent_mode': recommendation['agent_mode'],
         'candidate_accepted': recommendation['candidate_accepted'],
         'search_budget': recommendation['search_budget'],
-        'changes': recommendation.get('chosen', {}).get('changes', {}),
+        'changes': (recommendation.get('chosen') or {}).get('changes', {}),
         'final_stats': final_stats,
         'verification': recommendation['verification'],
         'before': recommendation['before'],
         'after': recommendation['after'],
-        'rationale': recommendation.get('chosen', {}).get('rationale', ''),
+        'rationale': (recommendation.get('chosen') or {}).get('rationale', ''),
+        'candidates': recommendation['candidates'],
+        'model': recommendation.get('model_status'),
+        'chosen': recommendation.get('chosen'),
     }
+    facts = {'baseline': results['Held-out baseline']['summary'], 'proposal': results['Held-out proposal']['summary'],
+             'recommendation_baseline': recommendation['before']['summary'],
+             'recommendation_proposal': recommendation['proposal_before']['summary'],
+             'recommendation': recommendation['after']['summary'],
+             'seed_context': {'baseline_and_proposal': 'proposal holdout', 'recommendation_baseline_and_proposal_and_recommendation': 'independent final holdout'}, 'proposal_verification': verification,
+             'recommendation_verification': recommendation['verification']}
+    if gemini_enabled:
+        explanation, explanation_model = gemini_client.explain(facts)
+    else:
+        explanation, explanation_model = gemini_client.explain_fallback(facts)
+    agent_recommendation['explanation'] = explanation
+    agent_recommendation['explanation_model'] = explanation_model
+    replays = make_replays(weapons, proposed, recommendation['patched_weapons'], policy, seed=seed_offset + 300000)
     return {
+        'profile': profile, 'seed_ranges': {'discovery': [seed_offset, seed_offset + int(policy.get('search_seeds', 24)) - 1], 'proposal_holdout': [seed_offset + 100000, seed_offset + 100000 + matches - 1], 'recommendation_holdout': [recommendation['verification']['final_seeds']['start'], recommendation['verification']['final_seeds']['end_exclusive'] - 1]},
+        'replays': replays, 'explanation': explanation, 'explanation_model': explanation_model,
         'source': 'developer-proposed stat changes',
         'matches': matches,
         'changes': changes,
@@ -141,22 +172,26 @@ def _append_event(run_id, message):
     with LOCK:
         run = RUNS[run_id]
         run['events'].append({'time': datetime.now(timezone.utc).isoformat(timespec='seconds'), 'message': message})
+        save_run(RESULTS_ROOT, run)
 
 
-def _run_worker(run_id, weapons, policy, changes, matches):
+def _run_worker(run_id, weapons, policy, changes, matches, document, profile, seed_offset, gemini_enabled):
     global ACTIVE_RUN
     try:
-        report = evaluate_proposal(weapons, policy, changes, matches, lambda message: _append_event(run_id, message))
+        report = evaluate_proposal(weapons, policy, changes, matches, lambda message: _append_event(run_id, message), profile, seed_offset, gemini_enabled)
+        report.update({"profile_source": document, "policy": policy, "run_id": run_id})
         json_path = RESULTS_ROOT / f'developer_run_{run_id}.json'
         html_path = RESULTS_ROOT / f'developer_report_{run_id}.html'
         RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
-        json_path.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n', encoding='utf-8')
+        atomic_write(json_path, json.dumps(report, indent=2, allow_nan=False) + '\n')
         proposal_html_report(report, html_path)
         with LOCK:
             RUNS[run_id].update({'status': 'complete', 'passed': report['verification']['passed'],
                                  'verification': report['verification'], 'summary': report['after']['summary'],
                                  'before': report['before'], 'after': report['after'],
+                                 'result': report, 'replays': report['replays'], 'explanation': report['explanation'],
                                  'recommendation': {
+                                     **report['recommendation'],
                                      'agent_mode': report['recommendation']['agent_mode'],
                                      'candidate_accepted': report['recommendation']['candidate_accepted'],
                                      'search_budget': report['recommendation']['search_budget'],
@@ -208,10 +243,30 @@ class DeveloperHandler(BaseHTTPRequestHandler):
                 return
             self._send(200, content_type, asset_path.read_bytes())
             return
+        if path.startswith('/assets/'):
+            try:
+                manifest = json.loads((WEB_ROOT / 'assets/manifest.json').read_text(encoding='utf-8'))
+                allowed = {entry['path'] for entry in manifest['assets'].values()}
+                relative = path.removeprefix('/assets/')
+                if relative not in allowed: raise ValueError('Unknown asset')
+                asset = (WEB_ROOT / 'assets' / relative).resolve()
+                if not asset.is_relative_to((WEB_ROOT / 'assets').resolve()) or not asset.is_file(): raise ValueError('Missing asset')
+                self._send(200, mimetypes.guess_type(asset.name)[0] or 'application/octet-stream', asset.read_bytes())
+            except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+                self._json(404, {'error': 'Asset unavailable'})
+            return
+        if path == '/api/content':
+            try: self._json(200, json.loads((WEB_ROOT / 'assets/manifest.json').read_text(encoding='utf-8')))
+            except (OSError, ValueError): self._json(503, {'error': 'Content manifest unavailable'})
+            return
+        if path == '/api/runs':
+            with LOCK: self._json(200, {'runs': [dict(r) for r in RUNS.values()]})
+            return
         if path == '/api/config':
             try:
-                _document, weapons, policy = load_inputs(self.server.weapons_path, self.server.policy_path)
-                self._json(200, {'weapons': weapons, 'allowed_parameters': policy['allowed_parameters'],
+                profile = parse_qs(urlsplit(self.path).query).get('profile', ['openfire'])[0]
+                _document, weapons, policy = load_inputs(self.server.weapons_path, self.server.policy_path, profile)
+                self._json(200, {'profile': profile, 'profiles': list(PROFILES), 'source': _document, 'weapons': weapons, 'allowed_parameters': policy['allowed_parameters'],
                                  'ranges': policy.get('ranges', [5, 15, 35]),
                                  'strategies': policy.get('strategies', ['aggressive', 'defensive', 'flanker']),
                                  'default_matches': min(24, int(policy.get('verification_seeds', 24)))})
@@ -219,13 +274,18 @@ class DeveloperHandler(BaseHTTPRequestHandler):
                 self._json(500, {'error': str(error)})
             return
         if path.startswith('/api/runs/'):
-            run_id = path.removeprefix('/api/runs/')
+            parts = path.removeprefix('/api/runs/').split('/')
+            run_id = parts[0]
             with LOCK:
                 run = RUNS.get(run_id)
                 if run is None:
                     self._json(404, {'error': 'Unknown run'})
                     return
-                self._json(200, dict(run))
+                if len(parts) == 2 and parts[1] == 'replays':
+                    if 'replays' not in run: self._json(404, {'error': 'Replays unavailable'})
+                    else: self._json(200, run['replays'])
+                elif len(parts) == 1: self._json(200, dict(run))
+                else: self._json(404, {'error': 'Not found'})
             return
         if path.startswith('/runs/'):
             parts = path.strip('/').split('/')
@@ -258,7 +318,12 @@ class DeveloperHandler(BaseHTTPRequestHandler):
             return
         try:
             payload = json.loads(self.rfile.read(int(length)))
-            _document, weapons, policy = load_inputs(self.server.weapons_path, self.server.policy_path)
+            if not isinstance(payload, dict): raise ValueError('Request body must be a JSON object')
+            profile = payload.get('profile', 'openfire')
+            if not isinstance(profile, str): raise ValueError('profile must be a string')
+            gemini_enabled = payload.get('gemini_enabled', True)
+            if not isinstance(gemini_enabled, bool): raise ValueError('gemini_enabled must be a boolean')
+            _document, weapons, policy = load_inputs(self.server.weapons_path, self.server.policy_path, profile)
             changes = payload.get('changes')
             matches = payload.get('matches')
             proposed = apply_proposed_changes(weapons, changes, policy['allowed_parameters'])
@@ -273,10 +338,11 @@ class DeveloperHandler(BaseHTTPRequestHandler):
                 return
             run_id = uuid.uuid4().hex
             ACTIVE_RUN = run_id
+            seed_offset = int(run_id[:8], 16) * 1000000
             RUNS[run_id] = {'id': run_id, 'status': 'running', 'events': [],
-                            'changes': changes, 'matches': matches, 'report_url': None, 'json_url': None}
+                            'changes': changes, 'matches': matches, 'profile': profile, 'seed_offset': seed_offset, 'gemini_enabled': gemini_enabled, 'profile_source': _document, 'policy': policy, 'report_url': None, 'json_url': None}
         _append_event(run_id, f'Accepted {len(changes)} weapon change(s); {matches} seeds per case.')
-        thread = threading.Thread(target=_run_worker, args=(run_id, weapons, policy, changes, matches), daemon=True)
+        thread = threading.Thread(target=_run_worker, args=(run_id, weapons, policy, changes, matches, _document, profile, seed_offset, gemini_enabled), daemon=True)
         thread.start()
         self._json(202, {'id': run_id, 'status': 'running'})
 
@@ -291,6 +357,7 @@ def main():
     parser.add_argument('--policy', help='Balance policy JSON; defaults to the included policy')
     args = parser.parse_args()
     load_inputs(args.weapons, args.policy)
+    RUNS.update(load_runs(RESULTS_ROOT))
     server = ThreadingHTTPServer(('127.0.0.1', args.port), DeveloperHandler)
     server.weapons_path = args.weapons
     server.policy_path = args.policy

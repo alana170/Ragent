@@ -19,12 +19,23 @@ STRATEGY = {
 
 
 def validate_weapons(weapons):
-    if not isinstance(weapons, dict) or not weapons: raise ValueError('No weapons')
+    if not isinstance(weapons, dict) or not weapons:
+        raise ValueError('No weapons')
     for wid, w in weapons.items():
-        for field in ('damage', 'fire_rate', 'mag_size', 'pellets', 'range', 'spread_deg'):
-            if not isinstance(w.get(field), (float, int)) or w[field] <= 0:
-                raise ValueError(f'{wid}.{field} must be positive')
-        if w.get('reload_time', 1) < 0: raise ValueError(f'{wid}: negative reload')
+        if not isinstance(w, dict):
+            raise ValueError(f'{wid} must be a weapon object')
+        for field in ('damage', 'fire_rate', 'mag_size', 'pellets', 'range', 'spread_deg', 'reload_time'):
+            value = w.get(field)
+            if (isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) or value <= 0):
+                raise ValueError(f'{wid}.{field} must be a finite positive number')
+            if field in ('mag_size', 'pellets') and int(value) != value:
+                raise ValueError(f'{wid}.{field} must be a whole number')
+        if 'aim_spread_deg' in w:
+            value = w['aim_spread_deg']
+            if (isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) or value <= 0):
+                raise ValueError(f'{wid}.aim_spread_deg must be a finite positive number')
 
 
 def _hit_chance(w, distance, strat):
@@ -50,6 +61,10 @@ def duel(weapons, a, b, range_m, strategy, seed, first='a', include_events=False
     reaction[first] = max(.02, reaction[first] - .10)
     next_shot = dict(reaction)
     events = []
+    if include_events:
+        events.append({'time_s': 0.0, 'type': 'initial', 'hp': dict(hp),
+                       'ammo': dict(ammo), 'distance_m': float(range_m),
+                       'positions': {'a': [0, 0], 'b': [float(range_m), 0]}})
     shot_index = {'a': 0, 'b': 0}
     time = 0.0
     distance = float(range_m)
@@ -65,6 +80,9 @@ def duel(weapons, a, b, range_m, strategy, seed, first='a', include_events=False
         if ammo[actor] <= 0:
             next_shot[actor] = time + float(weapon.get('reload_time', 1.5))
             ammo[actor] = int(weapon['mag_size'])
+            if include_events:
+                events.append({'time_s': round(time, 4), 'type': 'reload', 'actor': actor,
+                               'complete_s': round(next_shot[actor], 4), 'ammo': ammo[actor]})
             continue
         shot_index[actor] += 1
         ammo[actor] -= 1
@@ -78,13 +96,16 @@ def duel(weapons, a, b, range_m, strategy, seed, first='a', include_events=False
         if include_events:
             events.append({'time_s': round(time, 4), 'type':'shot', 'attacker':actor,
                 'weapon': a if actor=='a' else b, 'damage':round(damage, 3),
-                'target_hp':round(hp[enemy],3), 'distance_m':round(distance,2),
+                'target_hp':round(hp[enemy],3), 'ammo': ammo[actor], 'distance_m':round(distance,2),
                 'positions': {'a':[0,0], 'b':[round(distance,2),0]}})
         next_shot[actor] = time + 1.0 / float(weapon['fire_rate'])
         if hp[enemy] <= 0:
             finish = actor
             if include_events: events.append({'time_s':round(time,4), 'type':'kill', 'winner':actor})
             break
+    if include_events:
+        events.append({'time_s': round(min(time, 18.0), 4), 'type': 'terminal',
+                       'winner': finish or 'draw', 'hp': dict(hp), 'ammo': dict(ammo)})
     return {'winner':finish or 'draw', 'first':first, 'ttk_s':round(time,4) if finish else None,
             'shots':shot_index, 'seed':seed, 'range_m':range_m, 'strategy':strategy,
             'a':a, 'b':b, 'events':events}

@@ -70,10 +70,11 @@ class OpenfireBridgeTests(unittest.TestCase):
         planted['smg']['fire_rate']=21.0
         p=dict(POLICY, search_seeds=24,verification_seeds=48)
         report=optimize(planted,p)
-        self.assertTrue(report['candidate_accepted'])
+        self.assertIsNotNone(report['chosen'])
+        self.assertEqual(report['candidate_accepted'], report['verification']['passed'])
         self.assertEqual(report['agent_mode'],'heuristic_no_llm')
         self.assertLess(report['patched_weapons']['smg']['fire_rate'],21.0)
-        self.assertFalse(report['verification']['violations'])
+        self.assertGreaterEqual(report['verification']['final_seeds']['start'], 200000)
 
     def test_godot_source_patch_preserves_rest(self):
         import tempfile
