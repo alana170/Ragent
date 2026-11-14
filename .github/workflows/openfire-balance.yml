@@ -1,0 +1,84 @@
+name: RAGENT - OpenFire balance QA
+
+on:
+  pull_request:
+    paths:
+      - 'openfire'
+      - '.gitmodules'
+      - 'ragent_openfire/**'
+      - 'configs/openfire_balance_policy.json'
+      - 'godot_bridge/**'
+      - 'frontend/**'
+      - 'web/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tests/test_openfire_bridge.py'
+      - '.github/workflows/openfire-balance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  balance-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Build developer dashboard
+        run: |
+          npm ci
+          npm run build
+      - name: Run RAGENT unit tests
+        run: python3 -m unittest discover -s tests -p 'test_openfire_bridge.py' -v
+      - name: Export upstream weapon values
+        run: |
+          if test ! -f openfire/scripts/autoload/weapon_db.gd; then
+            echo 'OpenFire submodule missing. Run scripts/bootstrap_openfire.sh locally and commit the gitlink.' >&2
+            exit 1
+          fi
+          python3 -m ragent_openfire.cli export --source openfire/scripts/autoload/weapon_db.gd --output results/openfire_weapons.json
+      - name: Run baseline matchup experiments
+        run: python3 -m ragent_openfire.cli simulate --weapons results/openfire_weapons.json --policy configs/openfire_balance_policy.json --matches 24 --output results/openfire_baseline.json
+      - name: Generate demo imbalance and verified candidate
+        run: |
+          python3 -m ragent_openfire.cli plant --weapons results/openfire_weapons.json --output results/openfire_planted.json
+          python3 -m ragent_openfire.cli optimize --weapons results/openfire_planted.json --policy configs/openfire_balance_policy.json --output results/openfire_agent.json --html results/openfire_report.html --patched results/openfire_verified.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ragent-openfire-balance-report
+          path: |
+            results/openfire_baseline.json
+            results/openfire_agent.json
+            results/openfire_report.html
+            results/openfire_verified.json
+      - name: Comment QA summary on PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const r = JSON.parse(fs.readFileSync('results/openfire_agent.json','utf8'));
+            const note = [
+              '<!-- ragent-openfire-qa -->',
+              '### RAGENT OpenFire balance QA',
+              `- Model: **${r.agent_mode}** (heuristic is not an LLM)`,
+              `- Held-out verification: **${r.verification.passed ? 'PASS' : 'NOT VERIFIED'}**`,
+              `- Held-out seed count: ${r.verification.heldout_seed_count}`,
+              `- Proposed change: \`${JSON.stringify(r.chosen?.changes || {})}\``,
+              '- **Synthetic stat-level FPS duels, not real VALORANT data or full Godot bot matches.**',
+              'See the Actions artifact for the before/after heatmap, TTK and scenario metrics.'
+            ].join('\n');
+            const {data: comments} = await github.rest.issues.listComments({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,per_page:100});
+            const existing = comments.find(c=>c.user.type==='Bot' && c.body.includes('<!-- ragent-openfire-qa -->'));
+            if (existing) await github.rest.issues.updateComment({owner:context.repo.owner,repo:context.repo.repo,comment_id:existing.id,body:note});
+            else await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body:note});

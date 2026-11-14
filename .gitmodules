@@ -1,0 +1,3 @@
+[submodule "openfire"]
+	path = openfire
+	url = https://github.com/rokasjasonas/openfire.git
