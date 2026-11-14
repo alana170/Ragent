@@ -27,6 +27,8 @@ def test_candidates_are_validated_and_seed_ranges_are_disjoint():
          patch.object(agent, '_regression', return_value=[]):
         result = agent.optimize(WEAPONS, POLICY, suggestion_provider=lambda *_: (suggestions, {'status': 'live'}))
     assert all(not c['eligible'] and 'error' in c for c in result['candidates'][1:5])
+    assert result['model_status']['status'] == 'fallback'
+    assert result['model_status']['reason'] == 'invalid_model_output'
     assert result['verification']['discovery_seeds']['end_exclusive'] <= result['verification']['final_seeds']['start']
     json.dumps(result, allow_nan=False)
 

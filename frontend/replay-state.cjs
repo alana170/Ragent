@@ -35,6 +35,7 @@ function reconstruct(trace, time) {
       }
     } else if (event.type === 'shot' && state[actor] && state[target]) {
       state[actor].lastShot = at;
+      state[actor].reloading = false;
       const ammo = number(event.ammo_remaining) ?? number(event.ammo);
       if (ammo != null) state[actor].ammo = ammo;
       else if (state[actor].ammo != null) state[actor].ammo = Math.max(0, state[actor].ammo - 1);

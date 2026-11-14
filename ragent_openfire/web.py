@@ -143,7 +143,10 @@ def evaluate_proposal(weapons, policy, changes, matches, progress=None, profile=
         'chosen': recommendation.get('chosen'),
     }
     facts = {'baseline': results['Held-out baseline']['summary'], 'proposal': results['Held-out proposal']['summary'],
-             'recommendation': recommendation['after']['summary'], 'proposal_verification': verification,
+             'recommendation_baseline': recommendation['before']['summary'],
+             'recommendation_proposal': recommendation['proposal_before']['summary'],
+             'recommendation': recommendation['after']['summary'],
+             'seed_context': {'baseline_and_proposal': 'proposal holdout', 'recommendation_baseline_and_proposal_and_recommendation': 'independent final holdout'}, 'proposal_verification': verification,
              'recommendation_verification': recommendation['verification']}
     if gemini_enabled:
         explanation, explanation_model = gemini_client.explain(facts)
@@ -153,7 +156,7 @@ def evaluate_proposal(weapons, policy, changes, matches, progress=None, profile=
     agent_recommendation['explanation_model'] = explanation_model
     replays = make_replays(weapons, proposed, recommendation['patched_weapons'], policy, seed=seed_offset + 300000)
     return {
-        'profile': profile, 'seed_ranges': {'discovery': [seed_offset, seed_offset + int(policy.get('search_seeds', 24)) - 1], 'proposal_holdout': [seed_offset + 100000, seed_offset + 100000 + matches - 1], 'recommendation_holdout': [seed_offset + 200000, seed_offset + 200000 + int(policy.get('verification_seeds', 48)) - 1]},
+        'profile': profile, 'seed_ranges': {'discovery': [seed_offset, seed_offset + int(policy.get('search_seeds', 24)) - 1], 'proposal_holdout': [seed_offset + 100000, seed_offset + 100000 + matches - 1], 'recommendation_holdout': [recommendation['verification']['final_seeds']['start'], recommendation['verification']['final_seeds']['end_exclusive'] - 1]},
         'replays': replays, 'explanation': explanation, 'explanation_model': explanation_model,
         'source': 'developer-proposed stat changes',
         'matches': matches,

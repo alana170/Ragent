@@ -67,3 +67,14 @@ def test_environment_loads_only_key_with_checkout_precedence(tmp_path, monkeypat
     monkeypatch.delenv('GEMINI_API_KEY')
     gemini_client.load_environment()
     assert os.environ['GEMINI_API_KEY'] == 'local-test-key'
+
+
+def test_explanation_rejects_unverified_or_invented_numeric_claims(monkeypatch):
+    facts = {'recommendation_verification': {'passed': False}}
+    for summary in ('The recommendation passed.', 'The win rate is 99 percent.'):
+        response = {'summary': summary, 'tradeoffs': 'Review tradeoffs.',
+                    'limitations': 'Simulation only.', 'evidence_ids': ['recommendation_verification']}
+        monkeypatch.setattr(gemini_client, '_call', lambda *args: (response, {'status': 'live'}))
+        explanation, metadata = gemini_client.explain(facts)
+        assert metadata['status'] == 'fallback'
+        assert explanation['facts'] == facts

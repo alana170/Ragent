@@ -149,6 +149,9 @@ def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider
     if metadata.get('status') == 'live':
         metadata['validated_response'] = [{'id': a['id'], 'changes': a['changes'], 'rationale': a['rationale']}
                                           for a in attempts if a['source'] == 'gemini' and 'error' not in a]
+    if metadata.get('status') == 'live' and not metadata.get('validated_response'):
+        metadata.update(status='fallback', reason='invalid_model_output')
+        mode = 'heuristic_no_llm'
     comparator = attempts[0]
     viable = [a for a in attempts[1:] if a['eligible'] and
               (not comparator['eligible'] or a['score'] < comparator['score'])]

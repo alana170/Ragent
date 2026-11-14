@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -65,8 +66,16 @@ def _call(purpose, payload, schema):
         return value, meta
     except Exception as exc:
         # Exception messages may contain URLs, request details or credentials.
-        meta['reason'] = type(exc).__name__
         code = getattr(exc, 'code', None)
+        name = type(exc).__name__
+        if code == 429:
+            meta['reason'] = 'quota_exhausted'
+        elif 'timeout' in name.lower() or isinstance(exc, TimeoutError):
+            meta['reason'] = 'timeout'
+        elif isinstance(exc, (json.JSONDecodeError, TypeError, ValueError)):
+            meta['reason'] = 'invalid_model_output'
+        else:
+            meta['reason'] = name
         if isinstance(code, int): meta['http_status'] = code
         return None, meta
     finally:
@@ -103,13 +112,20 @@ def explain(facts):
     schema = {'type': 'OBJECT', 'properties': {'summary': {'type': 'STRING'}, 'tradeoffs': {'type': 'STRING'},
               'limitations': {'type': 'STRING'}, 'evidence_ids': {'type': 'ARRAY', 'items': {'type': 'STRING'}}},
               'required': ['summary', 'tradeoffs', 'limitations', 'evidence_ids']}
-    payload = {'task': 'Explain the code-determined verdict in plain text. Do not invent numbers or override the verdict. Cite evidence IDs.', 'facts': facts}
+    payload = {'task': 'Explain the code-determined verdict in plain text. Do not include any digits or numeric claims; code supplies all numbers. If verification failed, describe it as a failure and avoid the words passed, approved, verified, and successful even in negative phrases. Do not override the verdict. Cite only keys from facts as evidence IDs.', 'facts': facts}
     value, meta = _call('explanation', payload, schema)
     try:
         if value is not None:
             ids = value['evidence_ids']
             if not isinstance(ids, list) or not ids or any(i not in facts for i in ids): raise ValueError('invalid evidence IDs')
             if any(not isinstance(value[k], str) or len(value[k]) > 1500 for k in ('summary','tradeoffs','limitations')): raise ValueError('invalid text')
+            prose = ' '.join(value[k] for k in ('summary', 'tradeoffs', 'limitations'))
+            # Numeric evidence is supplied by code. Reject model-invented numbers and
+            # explicit passing claims when the verifier has rejected the candidate.
+            if re.search(r'\d', prose): raise ValueError('numeric claims require code facts')
+            verified = facts.get('recommendation_verification', {}).get('passed')
+            if verified is False and re.search(r'\b(?:passed|approved|verified|successful)\b', prose, re.I):
+                raise ValueError('unverified verdict in explanation')
             result = {k: value[k] for k in ('summary','tradeoffs','limitations','evidence_ids')}
             meta['validated_response'] = result
             return dict(result, facts=facts), meta

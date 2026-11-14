@@ -140,10 +140,10 @@ function WeaponArt({ asset, name }) {
   useEffect(() => setFailed(false), [asset?.url]);
   return asset?.url && !failed ? <img className="weapon-art" src={asset.url} alt={`${prettify(name)} weapon artwork`} onError={() => setFailed(true)} /> : <div className="asset-missing">Weapon artwork unavailable</div>;
 }
-function EvidencePanel({ run }) {
+function EvidencePanel({ run, recorded }) {
   const explanation = run.explanation || run.result?.explanation || run.recommendation?.explanation;
   const model = run.result?.explanation_model || run.recommendation?.explanation_model;
-  const status = model?.status === 'live' || model?.status === 'success' ? `Gemini live${model.model ? ` · ${model.model}` : ''}` : model ? `Deterministic fallback${model.reason ? ` · ${model.reason}` : ''}` : 'Explanation status unavailable';
+  const status = model?.status === 'live' || model?.status === 'success' ? `${recorded ? 'Recorded Gemini run' : 'Gemini live'}${model.model ? ` · ${model.model}` : ''}` : model ? `Deterministic fallback${model.reason ? ` · ${model.reason}` : ''}` : 'Explanation status unavailable';
   return <Panel className="evidence-panel"><SectionHeading eyebrow="EVIDENCE & INTERPRETATION" title="What the results mean" action={<span className="model-status">{status}</span>} />
     {explanation ? <div className="evidence-copy"><p>{explanation.summary}</p><p><strong>Tradeoffs</strong> {explanation.tradeoffs}</p><p><strong>Limitations</strong> {explanation.limitations}</p>{explanation.evidence_ids?.length > 0 && <small>Evidence: {explanation.evidence_ids.join(' · ')}</small>}</div> : <p className="muted">No grounded explanation was supplied for this run.</p>}
   </Panel>;
@@ -168,6 +168,7 @@ function App() {
   const [savedRuns, setSavedRuns] = useState([]);
   const [content, setContent] = useState(null);
   const [savedError, setSavedError] = useState('');
+  const [recorded, setRecorded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -190,14 +191,14 @@ function App() {
     if (!id) return;
     try {
       const selected = await api.run(id);
-      setRun(selected); setEvents(selected.events || []); setError('');
+      setProfile(selected.profile || 'openfire'); setRun(selected); setEvents(selected.events || []); setError(''); setRecorded(true);
       if (selected.status !== 'complete' && selected.status !== 'failed' && selected.status !== 'interrupted') { setBusy(true); await pollRun(id); }
     } catch (reason) { setBusy(false); setError(reason.message); }
   };
 
   const proposals = useMemo(() => Object.entries(form).flatMap(([weapon, stats]) =>
     Object.entries(stats).filter(([field, value]) => value !== config?.weapons?.[weapon]?.[field])
-      .map(([field, value]) => ({ weapon, field, value, baseline: config.weapons[weapon][field] }))), [form, config]);
+      .map(([field, value]) => ({ weapon, field, value, baseline: config?.weapons?.[weapon]?.[field] }))), [form, config]);
 
   const pollRun = async runId => {
     while (true) {
@@ -224,7 +225,7 @@ function App() {
       const [weapon, field] = path.split('.');
       defaults[weapon] = { ...defaults[weapon], [field]: config.weapons[weapon][field] };
     });
-    setForm(defaults); setRun(null); setEvents([]); setError('');
+    setForm(defaults); setRun(null); setEvents([]); setError(''); setRecorded(false);
   };
   const launchRun = async event => {
     event.preventDefault(); setError('');
@@ -232,7 +233,7 @@ function App() {
     if (proposals.some(item => item.value === '' || !Number.isFinite(item.value))) { setError('Enter a valid number for every edited stat.'); return; }
     const changes = {};
     proposals.forEach(({ weapon, field, value }) => { changes[weapon] = { ...changes[weapon], [field]: value }; });
-    setBusy(true); setEvents([]); setRun(null);
+    setBusy(true); setEvents([]); setRun(null); setRecorded(false);
     try {
       const data = await api.start({ changes, matches: Number(matches), ...(profile ? { profile } : {}) });
       setRun(data); setEvents(data.events || []);
@@ -291,7 +292,7 @@ function App() {
                 </div>
               )}</div>
               <div className="form-footer"><label className="seed-control"><span>Seeds per scenario</span><input type="number" min="1" max="100" value={matches} onChange={event => setMatches(event.target.value === '' ? '' : Number(event.target.value))} /><small>Both starting-player orders</small></label>
-                <div className="form-actions"><button type="button" className="button button-quiet" onClick={reset}><RotateCcw size={15} /> Reset</button>
+                <div className="form-actions">{(profile || config.profile) === 'valorant' && <button type="button" className="button button-quiet" disabled={busy} onClick={() => { reset(); updateValue('spectre', 'damage', 27); }}>Load demo preset</button>}<button type="button" className="button button-quiet" onClick={reset}><RotateCcw size={15} /> Reset</button>
                   <button type="submit" className="button button-primary" disabled={busy}>{busy ? <><LoaderCircle className="spin" size={16} /> Running…</> : <><Sparkles size={16} /> Run balance check <ArrowRight size={15} /></>}</button></div>
               </div>
             </form>
@@ -299,6 +300,7 @@ function App() {
           </Panel>
 
           {run?.status === 'complete' && <div className="results-stack">
+            {recorded && <Panel className="empty-state"><strong>Recorded run</strong><p>Reopened saved results; these are not a new live simulation or model call.</p></Panel>}
             <div className={cn('result-banner', run.passed ? 'success' : 'caution')}>
               <div className="result-banner-icon">{run.passed ? <ShieldCheck size={20} /> : <ShieldAlert size={20} />}</div>
               <div><strong>{run.passed ? 'Proposed change passed configured guardrails' : 'Proposed change needs a designer’s review'}</strong>
@@ -313,9 +315,9 @@ function App() {
               <MetricTile icon={Gauge} label="Maximum matchup spread" value={formatPercent(summary.max_matchup_spread)} note={`Baseline ${formatPercent(run.before.summary.max_matchup_spread)}`} tone="orange" />
               <MetricTile icon={ShieldCheck} label="Training + held-out" value={run.passed ? 'Passed' : 'Needs review'} note="Configured guardrails" tone={run.passed ? 'green' : 'orange'} />
             </div>
-            <Panel className="candidate-panel"><SectionHeading eyebrow="CHANGESET" title="Values across the decision" description="Original profile values, submitted values, and verified final values." /><div className="table-scroll"><table className="matchup-table"><thead><tr><th>Parameter</th><th>Original baseline</th><th>Developer proposal</th><th>Final recommendation</th></tr></thead><tbody>{Object.entries(run.changes || {}).flatMap(([weapon, fields]) => Object.entries(fields).map(([field, value]) => <tr key={`${weapon}.${field}`}><td>{prettify(weapon)} · {prettify(field)}</td><td>{run.profile_source?.weapons?.[weapon]?.[field] ?? run.result?.profile_source?.weapons?.[weapon]?.[field] ?? 'Unavailable'}</td><td>{value}</td><td>{recommendation?.candidate_accepted ? (recommendation.final_stats?.[weapon]?.[field] ?? value) : 'No verified recommendation'}</td></tr>))}</tbody></table></div></Panel>
+            <Panel className="candidate-panel"><SectionHeading eyebrow="CHANGESET" title="Values across the decision" description="Original profile values, submitted values, and verified final values." /><div className="table-scroll"><table className="matchup-table"><thead><tr><th>Parameter</th><th>Original baseline</th><th>Developer proposal</th><th>Final recommendation</th></tr></thead><tbody>{Object.entries(recommendation?.final_stats || run.changes || {}).flatMap(([weapon, fields]) => Object.keys(fields).map(field => { const baseline = run.profile_source?.weapons?.[weapon]?.[field] ?? run.result?.profile_source?.weapons?.[weapon]?.[field]; const value = run.changes?.[weapon]?.[field] ?? baseline; return <tr key={`${weapon}.${field}`}><td>{prettify(weapon)} · {prettify(field)}</td><td>{baseline ?? 'Unavailable'}</td><td>{value ?? 'Unavailable'}</td><td>{recommendation?.candidate_accepted ? (recommendation.final_stats?.[weapon]?.[field] ?? value) : 'No verified recommendation'}</td></tr>; }))}</tbody></table></div></Panel>
             <DuelReplay traces={replayTraces} assets={content?.assets || {}} />
-            <EvidencePanel run={run} />
+            <EvidencePanel run={run} recorded={recorded} />
             <CandidatePanel recommendation={recommendation} />
             <Panel className="report-panel">
               <div className="report-heading"><div><div className="eyebrow">DEVELOPER REPORT</div><h3>Proposal and verification</h3><p>Readable summary of the edit, guardrails, and independent retest.</p></div><a href={run.report_url} target="_blank" rel="noreferrer" className="button button-outline"><FileBarChart2 size={15} /> Open full report <ArrowRight size={14} /></a></div>

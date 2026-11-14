@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAGENT Proposed Change Report</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f2efe9;color:#181818;font:16px/1.5 Arial,sans-serif}
+header{background:#bf1433;color:white;padding:40px 5vw}h1{font-size:54px;margin:0;letter-spacing:-2px}h2{margin:22px 0 12px}
+.tag{font-size:13px;letter-spacing:.13em;text-transform:uppercase}main{padding:24px 5vw;max-width:1450px;margin:auto}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{border:1px solid #bbb6af;background:#fff;padding:18px}.kpi strong{font-size:28px;display:block}
+.note{font-size:13px;color:#555}.warn{color:#a20a29;font-weight:bold}
+section{margin-top:32px}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+th,td{border-bottom:1px solid #d6d1c9;padding:8px 12px;text-align:left}th{background:#e4dfd7}
+.rate{font-weight:700;text-align:center}.good{background:#d5f1e7}.hot{background:#f9ced6}.cold{background:#f4dfc8}
+pre{padding:16px;background:#1c1c1c;color:#fff;white-space:pre-wrap;word-break:break-word}
+footer{padding:25px 5vw;background:#1c1c1c;color:#ddd;margin-top:36px}
+</style></head>
+    <body><div style="padding:1rem;background:#fff1c2;color:#222;font: bold 16px sans-serif">RECORDED RUN · 2026-11-14 22:48 UTC · deterministic fallback (Gemini disabled)</div><header><div class="tag">THE RAGENTS / DEVHACKS 2026</div><h1>RAGENT</h1><p>Proposed change evaluation</p></header><main>
+    <p class="warn">Synthetic stat-level simulation only. This is not OpenFire 3D gameplay, Riot gameplay data, or proof of player retention.</p>
+    <p>Developer-proposed changes · 24 paired seeds per matchup · 96 held-out duels · Guardrails: <strong>PASSED</strong></p>
+    <section><h2>Before vs after — QA metrics</h2><div class="summary"><div class="kpi"><small>Before: max matchup spread</small><strong>4.17%</strong></div><div class="kpi"><small>After: max matchup spread</small><strong>4.17%</strong></div><div class="kpi"><small>Before: first-shooter advantage</small><strong>26.04%</strong></div><div class="kpi"><small>After: first-shooter advantage</small><strong>26.04%</strong></div><div class="kpi"><small>Before: mean TTK</small><strong>0.41s</strong></div><div class="kpi"><small>After: mean TTK</small><strong>0.41s</strong></div><div class="kpi"><small>Guardrails</small><strong>PASSED</strong></div></div></section>
+    <section><h2>Developer proposal and verification</h2><div class="summary"><div><h3>Proposed stat changes</h3><pre>{
+  &quot;spectre&quot;: {
+    &quot;damage&quot;: 27
+  }
+}</pre></div><div><h3>Training + held-out guardrails</h3><pre>{
+  &quot;passed&quot;: true,
+  &quot;training&quot;: {
+    &quot;violations&quot;: [],
+    &quot;regressions&quot;: [],
+    &quot;seed_count&quot;: 24
+  },
+  &quot;held_out&quot;: {
+    &quot;violations&quot;: [],
+    &quot;regressions&quot;: [],
+    &quot;seed_count&quot;: 24
+  },
+  &quot;duels_per_phase&quot;: 96
+}</pre></div></div></section>
+    <section><h2>Final agent recommendation</h2><p>Agent mode: <strong>heuristic_no_llm</strong> · 23 bounded candidates tested · Recommendation: <strong>PASSED</strong></p><div class="summary"><div><h3>Additional adjustment to developer proposal</h3><pre>{
+  &quot;spectre.fire_rate&quot;: &quot;13.9997&quot;
+}</pre></div><div><h3>Recommended final stats</h3><pre>{
+  &quot;spectre&quot;: {
+    &quot;damage&quot;: 27,
+    &quot;fire_rate&quot;: &quot;13.9997&quot;
+  }
+}</pre></div><div><h3>Recommendation held-out checks</h3><pre>{
+  &quot;passed&quot;: true,
+  &quot;violations&quot;: [],
+  &quot;regressions&quot;: [],
+  &quot;proposal_regressions&quot;: [],
+  &quot;search_seed_count&quot;: 24,
+  &quot;heldout_seed_count&quot;: 48,
+  &quot;discovery_seeds&quot;: {
+    &quot;start&quot;: 3904996917000000,
+    &quot;end_exclusive&quot;: 3904996917000024
+  },
+  &quot;final_seeds&quot;: {
+    &quot;start&quot;: 3904996917200000,
+    &quot;end_exclusive&quot;: 3904996917200048
+  }
+}</pre></div></div><p>Final stats are the developer's proposed values plus the selected agent adjustment. An empty adjustment means the agent selected no additional change.</p></section>
+    <section><h2>Per-matchup win rate and median TTK</h2><div class="scroll"><table><thead><tr><th>Weapon pairing</th><th>Range</th><th>Bot style</th><th>Before A win%</th><th>After A win%</th><th>Before median TTK (s)</th><th>After median TTK (s)</th></tr></thead><tbody><tr><td>vandal vs spectre</td><td>10m</td><td>aggressive</td><td>47.9167%</td><td class='rate good'>47.9167%</td><td>0.3818</td><td>0.3818</td></tr><tr><td>vandal vs spectre</td><td>10m</td><td>flanker</td><td>50.0000%</td><td class='rate good'>50.0000%</td><td>0.4301</td><td>0.4301</td></tr></tbody></table></div></section>
+    <section><h2>Explanation and model status</h2><pre>{
+  &quot;summary&quot;: &quot;Review the code-determined verification result before playtesting.&quot;,
+  &quot;tradeoffs&quot;: &quot;Compare the proposal and final recommendation against the original baseline.&quot;,
+  &quot;limitations&quot;: &quot;Seeded weapon duels are an approximation, not live gameplay.&quot;,
+  &quot;evidence_ids&quot;: [
+    &quot;baseline&quot;,
+    &quot;proposal&quot;,
+    &quot;recommendation_baseline&quot;,
+    &quot;recommendation_proposal&quot;,
+    &quot;recommendation&quot;,
+    &quot;seed_context&quot;,
+    &quot;proposal_verification&quot;,
+    &quot;recommendation_verification&quot;
+  ],
+  &quot;facts&quot;: {
+    &quot;baseline&quot;: {
+      &quot;duels&quot;: 96,
+      &quot;mean_ttk_s&quot;: &quot;0.4060&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.2604&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0417&quot;
+    },
+    &quot;proposal&quot;: {
+      &quot;duels&quot;: 96,
+      &quot;mean_ttk_s&quot;: &quot;0.4060&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.2604&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0417&quot;
+    },
+    &quot;recommendation_baseline&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4119&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.3229&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0417&quot;
+    },
+    &quot;recommendation_proposal&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4119&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.3229&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0417&quot;
+    },
+    &quot;recommendation&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4043&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.3229&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0625&quot;
+    },
+    &quot;seed_context&quot;: {
+      &quot;baseline_and_proposal&quot;: &quot;proposal holdout&quot;,
+      &quot;recommendation_baseline_and_proposal_and_recommendation&quot;: &quot;independent final holdout&quot;
+    },
+    &quot;proposal_verification&quot;: {
+      &quot;passed&quot;: true,
+      &quot;training&quot;: {
+        &quot;violations&quot;: [],
+        &quot;regressions&quot;: [],
+        &quot;seed_count&quot;: 24
+      },
+      &quot;held_out&quot;: {
+        &quot;violations&quot;: [],
+        &quot;regressions&quot;: [],
+        &quot;seed_count&quot;: 24
+      },
+      &quot;duels_per_phase&quot;: 96
+    },
+    &quot;recommendation_verification&quot;: {
+      &quot;passed&quot;: true,
+      &quot;violations&quot;: [],
+      &quot;regressions&quot;: [],
+      &quot;proposal_regressions&quot;: [],
+      &quot;search_seed_count&quot;: 24,
+      &quot;heldout_seed_count&quot;: 48,
+      &quot;discovery_seeds&quot;: {
+        &quot;start&quot;: 3904996917000000,
+        &quot;end_exclusive&quot;: 3904996917000024
+      },
+      &quot;final_seeds&quot;: {
+        &quot;start&quot;: 3904996917200000,
+        &quot;end_exclusive&quot;: 3904996917200048
+      }
+    }
+  }
+}</pre><pre>{
+  &quot;purpose&quot;: &quot;explanation&quot;,
+  &quot;status&quot;: &quot;fallback&quot;,
+  &quot;reason&quot;: &quot;disabled&quot;,
+  &quot;model&quot;: &quot;gemini-3.5-flash-lite&quot;
+}</pre></section>
+    <section><h2>Metric definitions</h2><ul><li>Win rate: A wins plus half of draws, divided by duels, with both starting orders paired for each seed.</li><li>Median TTK: median elimination time among decisive duels in each matchup; summary mean is the mean of matchup medians.</li><li>First-shooter advantage: absolute distance of each matchup's first-shooter win rate from 50%, averaged across matchups.</li><li>Maximum matchup spread: largest range between weapon win rates within any fixed distance and bot style.</li><li>Guardrails check configured neutral-matchup bands, first-shooter threshold, and off-target regression limit.</li></ul></section>
+    </main><footer>RAGENT · Developer-proposed change QA · Approximate seeded simulation only.</footer></body></html>
