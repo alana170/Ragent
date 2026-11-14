@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+results/*
+!results/example.json
+!results/example.csv
+.pytest_cache/
+.venv/
