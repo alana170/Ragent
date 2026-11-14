@@ -5,17 +5,9 @@ from pathlib import Path
 from .run_store import atomic_write
 
 STYLE='''
-*{box-sizing:border-box}body{margin:0;background:#f2efe9;color:#181818;font:16px/1.5 Arial,sans-serif}
-header{background:#bf1433;color:white;padding:40px 5vw}h1{font-size:54px;margin:0;letter-spacing:-2px}h2{margin:22px 0 12px}
-.tag{font-size:13px;letter-spacing:.13em;text-transform:uppercase}main{padding:24px 5vw;max-width:1450px;margin:auto}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.kpi{border:1px solid #bbb6af;background:#fff;padding:18px}.kpi strong{font-size:28px;display:block}
-.note{font-size:13px;color:#555}.warn{color:#a20a29;font-weight:bold}
-section{margin-top:32px}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
-th,td{border-bottom:1px solid #d6d1c9;padding:8px 12px;text-align:left}th{background:#e4dfd7}
-.rate{font-weight:700;text-align:center}.good{background:#d5f1e7}.hot{background:#f9ced6}.cold{background:#f4dfc8}
-pre{padding:16px;background:#1c1c1c;color:#fff;white-space:pre-wrap;word-break:break-word}
-footer{padding:25px 5vw;background:#1c1c1c;color:#ddd;margin-top:36px}
+*{box-sizing:border-box}body{margin:0;background:#0a0a0a;color:#f5f0e8;font:14px/1.6 Inter,system-ui,sans-serif}header{background:linear-gradient(115deg,#151515,#291a1c);border-bottom:1px solid #363030;padding:42px max(5vw,24px)}header p{color:#aaa39d;margin:6px 0}h1{font-size:38px;margin:4px 0;letter-spacing:-1.5px}h2{font-size:21px;letter-spacing:-.5px;margin:0 0 16px}h3{font-size:13px;margin:0 0 10px}.tag{font:600 10px monospace;letter-spacing:.14em;color:#ff4655;text-transform:uppercase}main{padding:26px 5vw;max-width:1450px;margin:auto}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.kpi{border:1px solid #363030;background:#151515;border-radius:10px;padding:19px;box-shadow:0 8px 25px #00000000}.kpi small{color:#aaa39d}.kpi strong{font-size:24px;letter-spacing:-.6px;display:block;margin-top:5px}.note{font-size:13px;color:#aaa39d}.warn{color:#f1b0b5;background:#291a1c;border:1px solid #533236;border-radius:10px;padding:14px 17px;font-size:13px}section{margin-top:32px}section>p,li{color:#bcb3ad}.scroll{overflow-x:auto;background:#151515;border:1px solid #363030;border-radius:10px}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{border-bottom:1px solid #333;padding:12px;text-align:left}th{background:#202020;color:#aaa39d;font-size:11px}tr:last-child td{border-bottom:0}.rate{font-weight:700}.good{color:#26845d;background:#eaf7f0}.hot{color:#bc5b54;background:#1515150ef}.cold{color:#ad7938;background:#1515155e8}pre{margin:0;padding:16px;border:1px solid #363030;border-radius:10px;background:#151515;color:#e7d5d5;white-space:pre-wrap;word-break:break-word;font:12px/1.7 monospace}footer{padding:25px 5vw;border-top:1px solid #363030;color:#aaa39d;margin-top:36px;font-size:11px}@media print{body{background:#151515}header{padding:20px 0}main{padding:10px 0}.scroll{overflow:visible}section{break-inside:avoid}footer{padding:15px 0}}
+
+header{background:radial-gradient(ellipse at 80% 30%,#38191d,transparent 55%),#111}h1,h2{font-family:'Bebas Neue',Impact,sans-serif;text-transform:uppercase;letter-spacing:.03em}h1{font-size:48px}h2{font-size:28px}.kpi,.scroll,.data-card,.warn,pre{border-radius:0}.good{background:#19302a;color:#a2ddc3}.hot,.cold{background:#392528;color:#ffadb2}@media print{body{background:#fff;color:#111}header{background:#fff;color:#111}.kpi,.data-card,.scroll{background:#fff;color:#111} .data-list dd{color:#111}}
 '''
 
 def format_rate(x):
@@ -42,6 +34,27 @@ def display_json(value):
 
 def format_json(value):
     return json.dumps(display_json(value), indent=2)
+
+
+def readable_data(value):
+    """Render report data as labeled fields instead of serialized JSON."""
+    if isinstance(value, dict):
+        if not value:
+            return '<p class="empty-data">No additional changes.</p>'
+        return '<dl class="data-list">' + ''.join(
+            f'<div><dt>{html.escape(str(key).replace("_", " ").replace(".", " · ").title())}</dt><dd>{readable_data(item)}</dd></div>'
+            for key, item in value.items()) + '</dl>'
+    if isinstance(value, (list, tuple)):
+        if not value:
+            return '<span class="data-empty">None</span>'
+        return '<ul class="data-items">' + ''.join(f'<li>{readable_data(item)}</li>' for item in value) + '</ul>'
+    if isinstance(value, bool):
+        return 'Yes' if value else 'No'
+    if value is None:
+        return '—'
+    if isinstance(value, float):
+        return f'{value:.4f}'
+    return html.escape(str(value))
 
 
 def html_report(report,path):
@@ -109,11 +122,11 @@ def proposal_html_report(report,path):
         stat('Before: mean TTK',f"{before_summary['mean_ttk_s']:.2f}s"),
         stat('After: mean TTK',f"{after_summary['mean_ttk_s']:.2f}s"),
         stat('Guardrails',status)])
-    changes=html.escape(format_json(report['changes']))
-    details=html.escape(format_json(verification))
-    recommended_changes=html.escape(format_json(recommendation['changes']))
-    final_stats=html.escape(format_json(recommendation['final_stats']))
-    recommendation_details=html.escape(format_json(recommendation['verification']))
+    changes=readable_data(report['changes'])
+    details=readable_data(verification)
+    recommended_changes=readable_data(recommendation['changes'])
+    final_stats=readable_data(recommendation['final_stats'])
+    recommendation_details=readable_data(recommendation['verification'])
     recommendation_status='PASSED' if recommendation['candidate_accepted'] else 'NEEDS REVIEW'
     explanation = html.escape(format_json(report.get('explanation', {})))
     model_status = html.escape(format_json(report.get('explanation_model', {})))
@@ -122,8 +135,8 @@ def proposal_html_report(report,path):
     <p class="warn">Synthetic stat-level simulation only. This is not OpenFire 3D gameplay, Riot gameplay data, or proof of player retention.</p>
     <p>Developer-proposed changes · {report['matches']} paired seeds per matchup · {after_summary['duels']} held-out duels · Guardrails: <strong>{status}</strong></p>
     <section><h2>Before vs after — QA metrics</h2><div class="summary">{cards}</div></section>
-    <section><h2>Developer proposal and verification</h2><div class="summary"><div><h3>Proposed stat changes</h3><pre>{changes}</pre></div><div><h3>Training + held-out guardrails</h3><pre>{details}</pre></div></div></section>
-    <section><h2>Final agent recommendation</h2><p>Agent mode: <strong>{html.escape(recommendation['agent_mode'])}</strong> · {recommendation['search_budget']} bounded candidates tested · Recommendation: <strong>{recommendation_status}</strong></p><div class="summary"><div><h3>Additional adjustment to developer proposal</h3><pre>{recommended_changes}</pre></div><div><h3>Recommended final stats</h3><pre>{final_stats}</pre></div><div><h3>Recommendation held-out checks</h3><pre>{recommendation_details}</pre></div></div><p>Final stats are the developer's proposed values plus the selected agent adjustment. An empty adjustment means the agent selected no additional change.</p></section>
+    <section><h2>Developer proposal and verification</h2><div class="summary"><div><h3>Proposed stat changes</h3><div class="data-card">{changes}</div></div><div><h3>Training + held-out guardrails</h3><div class="data-card">{details}</div></div></div></section>
+    <section><h2>Final agent recommendation</h2><p>Agent mode: <strong>{html.escape(recommendation['agent_mode'])}</strong> · {recommendation['search_budget']} bounded candidates tested · Recommendation: <strong>{recommendation_status}</strong></p><div class="summary"><div><h3>Additional adjustment to developer proposal</h3><div class="data-card">{recommended_changes}</div></div><div><h3>Recommended final stats</h3><div class="data-card">{final_stats}</div></div><div><h3>Recommendation held-out checks</h3><div class="data-card">{recommendation_details}</div></div></div><p>Final stats are the developer's proposed values plus the selected agent adjustment. An empty adjustment means the agent selected no additional change.</p></section>
     <section><h2>Per-matchup win rate and median TTK</h2><div class="scroll"><table><thead><tr><th>Weapon pairing</th><th>Range</th><th>Bot style</th><th>Before A win%</th><th>After A win%</th><th>Before median TTK (s)</th><th>After median TTK (s)</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
     <section><h2>Explanation and model status</h2><pre>{explanation}</pre><pre>{model_status}</pre></section>
     <section><h2>Metric definitions</h2><ul><li>Win rate: A wins plus half of draws, divided by duels, with both starting orders paired for each seed.</li><li>Median TTK: median elimination time among decisive duels in each matchup; summary mean is the mean of matchup medians.</li><li>First-shooter advantage: absolute distance of each matchup's first-shooter win rate from 50%, averaged across matchups.</li><li>Maximum matchup spread: largest range between weapon win rates within any fixed distance and bot style.</li><li>Guardrails check configured neutral-matchup bands, first-shooter threshold, and off-target regression limit.</li></ul></section>

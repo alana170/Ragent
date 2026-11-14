@@ -195,6 +195,7 @@ def _run_worker(run_id, weapons, policy, changes, matches, document, profile, se
                                      'agent_mode': report['recommendation']['agent_mode'],
                                      'candidate_accepted': report['recommendation']['candidate_accepted'],
                                      'search_budget': report['recommendation']['search_budget'],
+                                     'rationale': report['recommendation']['rationale'],
                                      'changes': report['recommendation']['changes'],
                                      'final_stats': report['recommendation']['final_stats'],
                                      'baseline_summary': report['recommendation']['before']['summary'],

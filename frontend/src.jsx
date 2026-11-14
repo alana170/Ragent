@@ -51,6 +51,7 @@ function JsonValue({ value }) {
 
 function JsonTree({ data, depth = 0 }) {
   const entries = Array.isArray(data) ? data.map((value, index) => [String(index), value]) : Object.entries(data || {});
+  if (!entries.length) return <div className="json-empty">No items to show</div>;
   return <div className={cn('json-tree', depth > 0 && 'json-nested')}>
     {entries.map(([key, value]) => {
       const expandable = value && typeof value === 'object';
@@ -155,6 +156,8 @@ function CandidatePanel({ recommendation }) {
     {candidates.length ? <div className="table-scroll"><table className="matchup-table"><thead><tr><th>Candidate</th><th>Source</th><th>Changes</th><th>Outcome</th></tr></thead><tbody>{candidates.map((candidate, index) => <tr key={candidate.id || index}><td>{candidate.id || `Candidate ${index + 1}`}</td><td>{candidate.source || 'Unavailable'}</td><td><code>{JSON.stringify(candidate.changes || {})}</code></td><td>{candidate.eligible === false ? 'Ineligible' : candidate.eligible === true ? 'Eligible' : 'See details'}{candidate.score != null && <small className="candidate-detail">Search score: {candidate.score}</small>}{candidate.metrics?.summary && <small className="candidate-detail">Mean TTK: {candidate.metrics.summary.mean_ttk_s?.toFixed(2) ?? '—'}s · Max spread: {candidate.metrics.summary.max_matchup_spread != null ? formatPercent(candidate.metrics.summary.max_matchup_spread) : '—'}</small>}{candidate.rationale && <small className="candidate-detail">{candidate.rationale}</small>}{candidate.error && <small className="candidate-detail">{candidate.error}</small>}{['search_violations', 'search_regressions', 'proposal_search_regressions'].flatMap(key => (candidate[key] || []).map(item => typeof item === 'string' ? item : JSON.stringify(item))).map((reason, i) => <small className="candidate-detail" key={i}>{typeof reason === 'string' ? reason : JSON.stringify(reason)}</small>)}</td></tr>)}</tbody></table></div> : <p>No candidates were recorded.</p>}
   </Panel>;
 }
+function SlidersIcon() { return <Swords size={20} />; }
+
 function App() {
   const [config, setConfig] = useState(null);
   const [form, setForm] = useState({});
@@ -169,6 +172,8 @@ function App() {
   const [content, setContent] = useState(null);
   const [savedError, setSavedError] = useState('');
   const [recorded, setRecorded] = useState(false);
+  const [page, setPage] = useState(() => ['developer', 'reports'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview');
+  useEffect(() => { const sync = () => setPage(['developer', 'reports'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview'); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync); }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -196,6 +201,7 @@ function App() {
     try {
       const selected = await api.run(id);
       setRun(selected); setEvents(selected.events || []); setError(''); setRecorded(true);
+      if (selected.status === 'complete') location.hash = 'reports';
       if (selected.status !== 'complete' && selected.status !== 'failed' && selected.status !== 'interrupted') { setBusy(true); await pollRun(id); }
     } catch (reason) { setBusy(false); setError(reason.message); }
   };
@@ -213,6 +219,7 @@ function App() {
         refreshRuns();
         setBusy(false);
         if (state.status !== 'complete') throw new Error(state.error || 'Simulation failed');
+        location.hash = 'reports';
         return;
       }
       await new Promise(resolve => window.setTimeout(resolve, 300));
@@ -261,11 +268,18 @@ function App() {
   if (!config) return <div className="loading-screen"><div className="brand-mark"><Crosshair size={24} /></div><p>{error || 'Preparing the balance lab…'}</p>{error && <span>{error}</span>}</div>;
 
   return <div className="app-shell">
-    <header className="topbar"><a href="/" className="brand"><span className="brand-mark"><Crosshair size={21} /></span><span>RAGENT<span className="brand-dot">.</span></span></a>
-      <div className="topbar-right"><span className="env-label"><span className="env-dot" /> LOCAL DEV ENVIRONMENT</span><span className="topbar-divider" /><span className="avatar">QA</span></div>
+    <header className="topbar"><a href="#overview" className="brand"><span className="brand-mark"><Crosshair size={21} /></span><span>RAGENT<span className="brand-dot">.</span></span></a>
+      <nav className="site-nav" aria-label="Main navigation"><a href="#overview" aria-current={page === 'overview' ? 'page' : undefined}>Overview</a><a href="#reports" aria-current={page === 'reports' ? 'page' : undefined}>Reports</a><a href="#developer" aria-current={page === 'developer' ? 'page' : undefined}>Developer lab</a></nav><div className="topbar-right"><span className="env-label"><span className="env-dot" /> LOCAL DEV ENVIRONMENT</span><span className="topbar-divider" /><span className="avatar">QA</span></div>
     </header>
     <main className="workspace">
-      <div className="page-intro"><div><div className="eyebrow">GAME BALANCE QUALITY ASSURANCE</div><h1>Balance Lab</h1><p>Explore a proposed change, test the ripple effects, and leave with a verified recommendation.</p></div>
+      {page === 'overview' && <div className="overview-page">
+        <div className="overview-hero"><div><div className="eyebrow">GAME BALANCE, WITH MORE CLARITY</div><h1>Better balance starts<br />with a better question<span>.</span></h1><p>Explore the impact of a change before it reaches players. RAGENT brings simulation, verification, and recommendations together in one place.</p><div className="hero-actions"><a className="button button-primary" href="#developer">Start a balance check <ArrowRight size={15} /></a><a className="button button-quiet" href="#reports">Explore reports</a></div></div><div className="hero-visual"><div className="hero-visual-label"><span><Activity size={16} /> BALANCE SIGNAL</span><span>SIMULATION / 01</span></div><div className="signal-chart"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></div><div className="hero-visual-footer"><span>From proposed change</span><ArrowRight size={16} /><strong>To informed decision</strong></div></div></div>
+        <div className="overview-heading"><div><div className="eyebrow">YOUR WORKBENCH</div><h2>From idea to insight</h2><p>A clear path through every balance decision.</p></div></div>
+        <div className="overview-cards"><a href="#developer" className="overview-card"><span className="overview-icon"><SlidersIcon /></span><span className="card-number">01 / CONFIGURE</span><h3>Propose a change</h3><p>Adjust weapon stats within the configured bounds and choose your simulation depth.</p><strong>Open developer lab <ArrowRight size={14} /></strong></a><a href="#reports" className="overview-card"><span className="overview-icon blue"><FileBarChart2 size={20} /></span><span className="card-number">02 / UNDERSTAND</span><h3>Read the results</h3><p>Compare outcomes against the baseline and inspect the scenarios behind them.</p><strong>View reports <ArrowRight size={14} /></strong></a><div className="overview-card"><span className="overview-icon green"><ShieldCheck size={20} /></span><span className="card-number">03 / VERIFY</span><h3>Decide with confidence</h3><p>Review guardrails and an independently tested recommendation before taking the next step.</p></div></div>
+        <div className="process-section"><div className="eyebrow">THE RAGENT PROCESS</div><h2>From signal to decision.</h2><div className="process-grid"><div><span>01 / ANALYZE</span><h3>Understand the baseline</h3><p>Start with the current weapon stats and configured balance policy.</p></div><div><span>02 / SIMULATE</span><h3>Test the impact</h3><p>Run repeatable duels across ranges, matchups, and playstyles.</p></div><div><span>03 / PROPOSE</span><h3>Explore the options</h3><p>Search bounded adjustments around your proposed change.</p></div><div><span>04 / VERIFY</span><h3>Review the evidence</h3><p>Check guardrails and retest the recommendation on independent seeds.</p></div></div></div>
+        <div className="overview-note"><FlaskConical size={19} /><div><strong>Built for thoughtful experimentation</strong><p>Results use seeded weapon-stat duels, an approximation of gameplay. Combine the evidence with playtesting and human judgment.</p></div><span>{Object.keys(config.weapons).length} weapons · {config.strategies.length} playstyles</span></div>
+      </div>}
+      {page !== 'overview' && <><div className="page-intro"><div><div className="eyebrow">GAME BALANCE QUALITY ASSURANCE</div><h1>{page === 'developer' ? 'Developer Lab' : 'Reports'}</h1><p>{page === 'developer' ? 'Configure a proposed change and test its impact.' : 'Review the evidence behind your latest balance check.'}</p></div>
         <div className="run-badge"><FlaskConical size={16} /><span>Stat-level simulation</span></div>
       </div>
       <div className="context-bar"><strong>VALORANT weapon lab</strong><label>Saved runs <select value={run?.id || ''} disabled={busy} onChange={event => openRun(event.target.value)}><option value="">Select a run</option>{savedRuns.map(item => <option key={item.id} value={item.id}>{item.status} · {item.id.slice(0, 8)}</option>)}</select></label><span>{savedError || (content ? `${content.source} · ${content.version || 'version unavailable'} · retrieved ${content.retrieved_at || 'unknown'}` : 'Pinned source data supplied by the server.')}</span></div>
@@ -274,7 +288,7 @@ function App() {
 
       <div className="dashboard-grid">
         <div className="main-column">
-          <Panel className="proposal-panel">
+          {page === 'developer' && <Panel className="proposal-panel">
             <SectionHeading eyebrow="01 · PROPOSE A CHANGE" title="What are you tuning?" description="Edit the values you want to test. We’ll compare against today’s baseline and check a separate set of seeds." />
             <form onSubmit={launchRun}>
               <div className="weapon-grid">{Object.entries(options).map(([weapon, fields]) =>
@@ -299,9 +313,9 @@ function App() {
               </div>
             </form>
             {error && <div className="form-error"><XCircle size={16} />{error}</div>}
-          </Panel>
+          </Panel>}
 
-          {run?.status === 'complete' && <div className="results-stack">
+          {page === 'reports' && run?.status === 'complete' && <div className="results-stack">
             {recorded && <Panel className="empty-state"><strong>Recorded run</strong><p>Reopened saved results; these are not a new live simulation or model call.</p></Panel>}
             <div className={cn('result-banner', run.passed ? 'success' : 'caution')}>
               <div className="result-banner-icon">{run.passed ? <ShieldCheck size={20} /> : <ShieldAlert size={20} />}</div>
@@ -340,7 +354,7 @@ function App() {
                 <div className="recommendation-heading"><div className="eyebrow">03 · AGENT RECOMMENDATION</div><h2>Best next move</h2><p>The local agent searched bounded adjustments around your proposed stats and tested the selected combination on fresh seeds.</p></div>
                 <StatusPill passed={recommendation.candidate_accepted}>{recommendation.candidate_accepted ? 'HELD-OUT PASSED' : 'NEEDS REVIEW'}</StatusPill>
               </div>
-              <div className="recommendation-callout"><Sparkles size={15} /><span>{recommendation.rationale || 'The best tested option is to keep your proposed values without an additional adjustment.'}</span></div>
+              <div className="recommendation-callout"><Sparkles size={15} /><span>{recommendation.rationale || (Object.keys(recommendation.changes).length ? 'Review the suggested adjustment and its verification below.' : 'The agent selected no additional adjustment to your proposal.')}</span></div>
               <div className="recommendation-metrics"><MetricTile icon={Target} label="Recommended mean TTK" value={`${recSummary.mean_ttk_s.toFixed(2)}s`} note={`Your proposal ${recommendation.baseline_summary.mean_ttk_s.toFixed(2)}s`} tone="green" />
                 <MetricTile icon={TrendingUp} label="First-shooter edge" value={formatPercent(recSummary.first_shooter_advantage)} note={`Your proposal ${formatPercent(recommendation.baseline_summary.first_shooter_advantage)}`} tone="blue" />
                 <MetricTile icon={Gauge} label="Maximum spread" value={formatPercent(recSummary.max_matchup_spread)} note={`Your proposal ${formatPercent(recommendation.baseline_summary.max_matchup_spread)}`} tone="orange" />
@@ -355,6 +369,7 @@ function App() {
             {recommendation && !recommendation.candidate_accepted && <Panel className="empty-state"><h3>No verified recommendation</h3><p>The tested candidates did not produce a verified final recommendation. Inspect the candidate evidence and proposal checks before deciding what to test next.</p></Panel>}
             {run.before && run.after && <MatchupTable before={run.before} after={run.after} />}
           </div>}
+          {page === 'reports' && run?.status !== 'complete' && <Panel className="empty-report"><div className="overview-icon"><FileBarChart2 size={22} /></div><h2>Your report will appear here</h2><p>Run a balance check to see the guardrails, matchup results, and agent recommendation together.</p><a className="button button-primary" href="#developer">Go to developer lab <ArrowRight size={15} /></a></Panel>}
         </div>
         <aside className="side-column"><RunLog events={events} running={busy} />
           <Panel className="method-panel"><div className="method-icon"><FlaskConical size={17} /></div><h3>How to read this</h3>
@@ -365,6 +380,7 @@ function App() {
           </Panel>
         </aside>
       </div>
+      </>}
       <footer className="page-footer"><span><Crosshair size={15} /> RAGENT <i /> DevHacks 2026</span><span>For developer QA · Synthetic simulation only</span></footer>
     </main>
   </div>;
