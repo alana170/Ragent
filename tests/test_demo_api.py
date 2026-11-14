@@ -46,3 +46,24 @@ def test_http_profile_assets_invalid_request_and_saved_run(tmp_path, monkeypatch
             assert json.load(response) == run["replays"]
     finally:
         server.shutdown(); thread.join(); server.server_close()
+
+
+def test_environment_loads_only_key_with_checkout_precedence(tmp_path, monkeypatch):
+    local = tmp_path / 'worktree.env'
+    primary = tmp_path / 'primary.env'
+    local.write_text('OTHER_SETTING=ignored\n', encoding='utf-8')
+    primary.write_text('GEMINI_API_KEY=primary-test-key\nOTHER_SETTING=ignored\n', encoding='utf-8')
+    monkeypatch.delenv('GEMINI_API_KEY', raising=False)
+    monkeypatch.delenv('OTHER_SETTING', raising=False)
+    monkeypatch.setattr(gemini_client, '_environment_paths', lambda: [local, primary])
+    gemini_client.load_environment()
+    import os
+    assert os.environ['GEMINI_API_KEY'] == 'primary-test-key'
+    assert 'OTHER_SETTING' not in os.environ
+    monkeypatch.setenv('GEMINI_API_KEY', 'environment-test-key')
+    local.write_text('GEMINI_API_KEY=local-test-key\n', encoding='utf-8')
+    gemini_client.load_environment()
+    assert os.environ['GEMINI_API_KEY'] == 'environment-test-key'
+    monkeypatch.delenv('GEMINI_API_KEY')
+    gemini_client.load_environment()
+    assert os.environ['GEMINI_API_KEY'] == 'local-test-key'

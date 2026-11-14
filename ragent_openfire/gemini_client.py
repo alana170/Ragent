@@ -2,6 +2,8 @@
 from __future__ import annotations
 import json
 import os
+from pathlib import Path
+import subprocess
 import time
 
 MODEL = 'gemini-3.5-flash-lite'
@@ -9,11 +11,37 @@ TIMEOUT_MS = 15000
 MAX_OUTPUT_TOKENS = 1024
 
 
-def load_environment():
+def _environment_paths():
+    """Prefer this checkout's dotenv, then the primary Git checkout's dotenv."""
+    root = Path(__file__).resolve().parents[1]
+    paths = [root / '.env']
     try:
-        from dotenv import load_dotenv
-        load_dotenv(override=False)
-    except ImportError:
+        result = subprocess.run(
+            ['git', 'rev-parse', '--path-format=absolute', '--git-common-dir'],
+            cwd=root, capture_output=True, text=True, check=True, timeout=2,
+        )
+        common = Path(result.stdout.strip())
+        # A normal repository's common directory is its primary checkout's .git.
+        if common.name == '.git':
+            paths.append(common.parent / '.env')
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return paths
+
+
+def load_environment():
+    """Load only the API key, without overriding the process environment."""
+    if os.getenv('GEMINI_API_KEY'):
+        return
+    try:
+        from dotenv import dotenv_values
+        for path in _environment_paths():
+            if path.is_file():
+                key = dotenv_values(path).get('GEMINI_API_KEY')
+                if key:
+                    os.environ['GEMINI_API_KEY'] = key
+                    return
+    except (ImportError, OSError):
         pass
 
 
