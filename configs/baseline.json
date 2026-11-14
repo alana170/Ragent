@@ -1,4 +1,16 @@
 {
-  "weapons": {"sniper": {"damage": 80.0}},
-  "abilities": {"smoke": {"duration": 10.0}}
+  "rounds": 5, "tick_seconds": 0.25, "max_ticks": 480,
+  "round_time": 60, "plant_time": 2, "defuse_time": 3, "bomb_time": 15,
+  "health": 100, "speed": 4, "site_radius": 2,
+  "map": {"width": 100, "height": 60, "attacker_spawns": [[5,25],[5,30],[5,35]], "defender_spawns": [[90,15],[90,30],[90,45]], "sites": [[78,15],[78,45]], "cover": [[40,0,45,23],[40,37,45,60]]},
+  "weapons": {
+    "rifle": {"damage": 34, "accuracy": 0.65, "range": 55, "falloff": 0.5, "interval": 0.5, "ammo": 25, "reload": 2},
+    "suppressed_rifle": {"damage": 30, "accuracy": 0.72, "range": 50, "falloff": 0.5, "interval": 0.5, "ammo": 25, "reload": 2},
+    "sniper": {"damage": 90, "accuracy": 0.7, "range": 100, "falloff": 0.9, "interval": 1.5, "ammo": 5, "reload": 3}
+  },
+  "abilities": {
+    "dash": {"cooldown": 12, "duration": 0.5, "multiplier": 3},
+    "smoke": {"cooldown": 20, "duration": 5, "radius": 6},
+    "heal": {"cooldown": 15, "duration": 1, "amount": 35}
+  }
 }
