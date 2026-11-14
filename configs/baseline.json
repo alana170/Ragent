@@ -1,0 +1,4 @@
+{
+  "weapons": {"sniper": {"damage": 80.0}},
+  "abilities": {"smoke": {"duration": 10.0}}
+}
