@@ -90,3 +90,27 @@ def test_valorant_editable_stats_are_bounded_and_search_covers_both_weapons():
     candidates = _heuristic_candidates(changed, dict(policy, target_weapons=["vandal", "spectre"]))[:23]
     assert {next(iter(c["changes"])).split(".")[0] for c in candidates} == {"vandal", "spectre"}
     assert {next(iter(c["changes"])).split(".")[1] for c in candidates} == fields
+
+
+def test_starter_runs_have_working_reports_and_downloads(monkeypatch):
+    runs = web.load_runs(web.STARTER_RUNS_ROOT)
+    assert len(runs) == 3
+    assert all(run['status'] == 'complete' and run['profile'] == 'valorant' for run in runs.values())
+    monkeypatch.setattr(web, 'RUNS', runs)
+    server = ThreadingHTTPServer(('127.0.0.1', 0), web.DeveloperHandler)
+    server.weapons_path = server.policy_path = None
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        base = 'http://127.0.0.1:%s' % server.server_port
+        with urlopen(base + '/api/runs') as response:
+            assert len(json.load(response)['runs']) == 3
+        for run_id in runs:
+            with urlopen(base + '/runs/' + run_id + '/report') as response:
+                assert response.status == 200 and b'<html' in response.read().lower()
+            with urlopen(base + '/runs/' + run_id + '/json') as response:
+                assert json.load(response)['run_id'] == run_id
+    finally:
+        server.shutdown()
+        thread.join()
+        server.server_close()

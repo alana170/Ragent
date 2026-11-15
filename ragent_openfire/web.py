@@ -24,6 +24,7 @@ from .simulation import balance_violations, regression_violations, run_suite, va
 ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / 'web'
 RESULTS_ROOT = ROOT / 'results'
+STARTER_RUNS_ROOT = ROOT / 'fixtures' / 'starter_runs'
 LOCK = threading.Lock()
 RUNS = {}
 ACTIVE_RUN = None
@@ -294,6 +295,8 @@ class DeveloperHandler(BaseHTTPRequestHandler):
                 with LOCK:
                     run = RUNS[parts[1]]
                     file_path = run.get('report_path' if parts[2] == 'report' else 'json_path' if parts[2] == 'json' else '')
+                if file_path:
+                    file_path = ROOT / file_path
                 if not file_path or not Path(file_path).is_file():
                     self._json(404, {'error': 'Report is not available'})
                     return
@@ -358,6 +361,7 @@ def main():
     parser.add_argument('--policy', help='Balance policy JSON; defaults to the included policy')
     args = parser.parse_args()
     load_inputs(args.weapons, args.policy)
+    RUNS.update(load_runs(STARTER_RUNS_ROOT))
     RUNS.update(load_runs(RESULTS_ROOT))
     server = ThreadingHTTPServer(('127.0.0.1', args.port), DeveloperHandler)
     server.weapons_path = args.weapons

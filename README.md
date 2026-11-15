@@ -23,3 +23,7 @@ python3 -m experiments.replay --scenario baseline --seed 0 --output results/repl
 
 Open the generated file in a browser. Change `--scenario` or `--seed` to watch
 another match. Playback offers pause, speed, and timeline controls.
+
+The developer dashboard includes three recorded VALORANT example runs in
+`fixtures/starter_runs`. Select one from **Saved runs** to explore its results,
+replay, and report. New runs are saved separately in the local `results/` folder.
