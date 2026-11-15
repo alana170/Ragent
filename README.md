@@ -23,3 +23,18 @@ python3 -m experiments.replay --scenario baseline --seed 0 --output results/repl
 
 Open the generated file in a browser. Change `--scenario` or `--seed` to watch
 another match. Playback offers pause, speed, and timeline controls.
+
+## Developer dashboard
+
+Build and run the local React dashboard from the repository root:
+
+```sh
+npm install
+npm run build
+python3 -m ragent_openfire.web
+```
+
+Open `http://127.0.0.1:8765`. The Saved runs menu includes a bundled
+`Demo · Spectre damage tuning` report alongside runs saved locally.
+The Developer Lab keeps seed count under collapsed Advanced settings; it
+defaults to 24 seeds per scenario and tests both starting-player orders.

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="360" viewBox="0 0 1600 360" role="img" aria-labelledby="title">
+  <title id="title">RAGENT data flow</title>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#151a31"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9b87ff"/>
+      <stop offset="1" stop-color="#6ce2c4"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#8f9ab6"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="360" rx="24" fill="url(#background)"/>
+  <path d="M0 70H1600" stroke="#ffffff" stroke-opacity=".06"/>
+  <g fill="none" stroke="#8f9ab6" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M218 180H244"/>
+    <path d="M408 180H434"/>
+    <path d="M598 180H624"/>
+    <path d="M788 180H814"/>
+    <path d="M978 180H1004"/>
+    <path d="M1168 180H1194"/>
+    <path d="M1358 180H1384"/>
+  </g>
+  <g filter="url(#shadow)" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="16" font-weight="650" text-anchor="middle">
+    <g>
+      <rect x="58" y="130" width="160" height="100" rx="18" fill="#1b2138" stroke="#9b87ff" stroke-opacity=".75"/>
+      <circle cx="80" cy="152" r="4" fill="#9b87ff"/>
+      <text x="138" y="181" fill="#f3f5ff"><tspan x="138">Weapon Data</tspan><tspan x="138" dy="22">+ Policy</tspan></text>
+    </g>
+    <g>
+      <rect x="248" y="130" width="160" height="100" rx="18" fill="#1b2138" stroke="#9b87ff" stroke-opacity=".75"/>
+      <circle cx="270" cy="152" r="4" fill="#9b87ff"/>
+      <text x="328" y="181" fill="#f3f5ff"><tspan x="328">Developer</tspan><tspan x="328" dy="22">Proposal</tspan></text>
+    </g>
+    <g>
+      <rect x="438" y="130" width="160" height="100" rx="18" fill="#1b2138" stroke="#9b87ff" stroke-opacity=".75"/>
+      <circle cx="460" cy="152" r="4" fill="#9b87ff"/>
+      <text x="518" y="192" fill="#f3f5ff">Validation</text>
+    </g>
+    <g>
+      <rect x="628" y="130" width="160" height="100" rx="18" fill="#1b2138" stroke="#9b87ff" stroke-opacity=".75"/>
+      <circle cx="650" cy="152" r="4" fill="#9b87ff"/>
+      <text x="708" y="192" fill="#f3f5ff">Simulation</text>
+    </g>
+    <g>
+      <rect x="818" y="130" width="160" height="100" rx="18" fill="#1b2138" stroke="#9b87ff" stroke-opacity=".75"/>
+      <circle cx="840" cy="152" r="4" fill="#9b87ff"/>
+      <text x="898" y="181" fill="#f3f5ff"><tspan x="898">Guardrail</tspan><tspan x="898" dy="22">Checks</tspan></text>
+    </g>
+    <g>
+      <rect x="1008" y="130" width="160" height="100" rx="18" fill="#20223e" stroke="#9b87ff" stroke-opacity=".9"/>
+      <circle cx="1030" cy="152" r="4" fill="#9b87ff"/>
+      <text x="1088" y="181" fill="#f3f5ff"><tspan x="1088">Candidate</tspan><tspan x="1088" dy="22">Search</tspan></text>
+    </g>
+    <g>
+      <rect x="1198" y="130" width="160" height="100" rx="18" fill="#1b2b36" stroke="#6ce2c4" stroke-opacity=".85"/>
+      <circle cx="1220" cy="152" r="4" fill="#6ce2c4"/>
+      <text x="1278" y="181" fill="#f3f5ff"><tspan x="1278">Held-out</tspan><tspan x="1278" dy="22">Verification</tspan></text>
+    </g>
+    <g>
+      <rect x="1388" y="130" width="160" height="100" rx="18" fill="#1b2b36" stroke="#6ce2c4" stroke-opacity=".85"/>
+      <circle cx="1410" cy="152" r="4" fill="#6ce2c4"/>
+      <text x="1468" y="192" fill="#f3f5ff">Report</text>
+    </g>
+  </g>
+  <rect x="58" y="286" width="1490" height="2" rx="1" fill="url(#accent)" opacity=".55"/>
+</svg>

@@ -103,10 +103,15 @@ def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider
     proposals.insert(0, {'changes': {}, 'rationale': 'Unchanged proposal comparator.', 'source': 'comparator'})
     attempts, seen = [], set()
     budget = max(1, min(28, int(policy.get('candidate_budget', 28))))
-    for index, candidate in enumerate(proposals[:budget], 1):
+    evaluated_count = 0
+    for candidate in proposals:
+        if evaluated_count >= budget:
+            break
+        index = len(attempts) + 1
         entry = {'id': f'candidate-{index}', 'source': candidate.get('source', 'gemini') if isinstance(candidate, dict) else 'gemini',
                  'changes': candidate.get('changes') if isinstance(candidate, dict) else None,
                  'rationale': candidate.get('rationale', '') if isinstance(candidate, dict) else '', 'eligible': False}
+        counted = False
         try:
             changes = entry['changes']
             if not isinstance(changes, dict) or (not changes and entry['source'] != 'comparator'):
@@ -125,6 +130,8 @@ def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider
             if key in seen:
                 raise ValueError('Duplicate candidate')
             seen.add(key)
+            evaluated_count += 1
+            counted = True
             entry['changes'] = normalized
             report = proposal_train if not normalized else run_suite(patch, policy, train_seeds, trace_one=False)
             issues = balance_violations(report, policy)
@@ -144,8 +151,8 @@ def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider
                 entry['rationale'] = ''
             entry['error'] = str(exc)
         attempts.append(entry)
-        if progress:
-            progress(f'Agent search {index}/{min(len(proposals), budget)} candidates')
+        if counted and progress:
+            progress(f'Agent search {evaluated_count}/{budget} candidates')
     if metadata.get('status') == 'live':
         metadata['validated_response'] = [{'id': a['id'], 'changes': a['changes'], 'rationale': a['rationale']}
                                           for a in attempts if a['source'] == 'gemini' and 'error' not in a]
@@ -174,7 +181,7 @@ def optimize(weapons, policy, progress=None, allow_llm=True, suggestion_provider
     if progress:
         progress(f'Agent recommendation verification {"PASSED" if approved else "NEEDS REVIEW"}')
     return {'agent_mode': mode, 'llm_error': metadata.get('reason'), 'model_status': metadata,
-            'search_budget': len(attempts), 'chosen': chosen, 'candidate_accepted': approved,
+            'search_budget': evaluated_count, 'chosen': chosen, 'candidate_accepted': approved,
             'verification': {'passed': approved, 'violations': issues, 'regressions': regress,
                              'proposal_regressions': proposal_regress,
                              'search_seed_count': len(train_seeds), 'heldout_seed_count': len(heldout_seeds),

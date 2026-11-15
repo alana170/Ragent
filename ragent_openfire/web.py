@@ -24,9 +24,30 @@ from .simulation import balance_violations, regression_violations, run_suite, va
 ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / 'web'
 RESULTS_ROOT = ROOT / 'results'
+DEMO_RUN_ID = 'e8c18635e27c470d9b459df4ea520245'
 LOCK = threading.Lock()
 RUNS = {}
 ACTIVE_RUN = None
+
+
+def load_demo_run():
+    demo_root = ROOT / 'docs' / 'recorded-demo'
+    run = json.loads((demo_root / f'run_{DEMO_RUN_ID}.json').read_text(encoding='utf-8'))
+    if run.get('id') != DEMO_RUN_ID or run.get('status') != 'complete' or run.get('profile') != 'valorant':
+        raise ValueError('The bundled VALORANT demo run is invalid')
+    report_path = demo_root / f'developer_report_{DEMO_RUN_ID}.html'
+    json_path = demo_root / f'developer_run_{DEMO_RUN_ID}.json'
+    if not report_path.is_file() or not json_path.is_file():
+        raise FileNotFoundError('The bundled VALORANT demo report is incomplete')
+    run.update({
+        'is_demo': True,
+        'label': 'Spectre damage tuning',
+        'report_path': str(report_path),
+        'json_path': str(json_path),
+        'report_url': f'/runs/{DEMO_RUN_ID}/report',
+        'json_url': f'/runs/{DEMO_RUN_ID}/json',
+    })
+    return run
 
 
 PROFILES = {
@@ -359,6 +380,7 @@ def main():
     args = parser.parse_args()
     load_inputs(args.weapons, args.policy)
     RUNS.update(load_runs(RESULTS_ROOT))
+    RUNS.setdefault(DEMO_RUN_ID, load_demo_run())
     server = ThreadingHTTPServer(('127.0.0.1', args.port), DeveloperHandler)
     server.weapons_path = args.weapons
     server.policy_path = args.policy
