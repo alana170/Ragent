@@ -1,0 +1,3219 @@
+{
+  "profile": "valorant",
+  "seed_ranges": {
+    "discovery": [
+      3000000,
+      3000023
+    ],
+    "proposal_holdout": [
+      3100000,
+      3100003
+    ],
+    "recommendation_holdout": [
+      3200000,
+      3200047
+    ]
+  },
+  "replays": {
+    "description": "One simulated seeded duel per configuration; not an aggregate result.",
+    "scenario": {
+      "a": "vandal",
+      "b": "spectre",
+      "range_m": 10,
+      "strategy": "aggressive",
+      "seed": 3300000,
+      "first": "a"
+    },
+    "traces": {
+      "baseline": {
+        "config_sha256": "be6e27e58871f0b17b7cb2fa58461256b03af32f871e2a92cd66c11f22b8b389",
+        "weapons": {
+          "vandal": {
+            "damage": 40,
+            "fire_rate": 9.75,
+            "mag_size": 25,
+            "reload_time": 2.5,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          },
+          "spectre": {
+            "damage": 26,
+            "fire_rate": 13.333,
+            "mag_size": 30,
+            "reload_time": 2.25,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          }
+        },
+        "trace": {
+          "winner": "a",
+          "first": "a",
+          "ttk_s": 0.3111,
+          "shots": {
+            "a": 3,
+            "b": 2
+          },
+          "seed": 3300000,
+          "range_m": 10,
+          "strategy": "aggressive",
+          "a": "vandal",
+          "b": "spectre",
+          "events": [
+            {
+              "time_s": 0.0,
+              "type": "initial",
+              "hp": {
+                "a": 100.0,
+                "b": 100.0
+              },
+              "ammo": {
+                "a": 25,
+                "b": 30
+              },
+              "distance_m": 10.0,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  10.0,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.106,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 60.0,
+              "ammo": 24,
+              "distance_m": 9.81,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.81,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2085,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 20.0,
+              "ammo": 23,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2126,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 26.0,
+              "target_hp": 74.0,
+              "ammo": 29,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2876,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 26.0,
+              "target_hp": 48.0,
+              "ammo": 28,
+              "distance_m": 9.48,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.48,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 0.0,
+              "ammo": 22,
+              "distance_m": 9.44,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.44,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "kill",
+              "winner": "a"
+            },
+            {
+              "time_s": 0.3111,
+              "type": "terminal",
+              "winner": "a",
+              "hp": {
+                "a": 48.0,
+                "b": 0.0
+              },
+              "ammo": {
+                "a": 22,
+                "b": 28
+              }
+            }
+          ]
+        }
+      },
+      "proposal": {
+        "config_sha256": "a9c7e94d4b7e6298a5e75682cb2b947fc8d544ef5c279cd77c1fb8cd88cc1efd",
+        "weapons": {
+          "vandal": {
+            "damage": 40,
+            "fire_rate": 9.75,
+            "mag_size": 25,
+            "reload_time": 2.5,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          },
+          "spectre": {
+            "damage": 24,
+            "fire_rate": 13.333,
+            "mag_size": 30,
+            "reload_time": 2.5,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          }
+        },
+        "trace": {
+          "winner": "a",
+          "first": "a",
+          "ttk_s": 0.3111,
+          "shots": {
+            "a": 3,
+            "b": 2
+          },
+          "seed": 3300000,
+          "range_m": 10,
+          "strategy": "aggressive",
+          "a": "vandal",
+          "b": "spectre",
+          "events": [
+            {
+              "time_s": 0.0,
+              "type": "initial",
+              "hp": {
+                "a": 100.0,
+                "b": 100.0
+              },
+              "ammo": {
+                "a": 25,
+                "b": 30
+              },
+              "distance_m": 10.0,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  10.0,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.106,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 60.0,
+              "ammo": 24,
+              "distance_m": 9.81,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.81,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2085,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 20.0,
+              "ammo": 23,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2126,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 24.0,
+              "target_hp": 76.0,
+              "ammo": 29,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2876,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 24.0,
+              "target_hp": 52.0,
+              "ammo": 28,
+              "distance_m": 9.48,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.48,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 0.0,
+              "ammo": 22,
+              "distance_m": 9.44,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.44,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "kill",
+              "winner": "a"
+            },
+            {
+              "time_s": 0.3111,
+              "type": "terminal",
+              "winner": "a",
+              "hp": {
+                "a": 52.0,
+                "b": 0.0
+              },
+              "ammo": {
+                "a": 22,
+                "b": 28
+              }
+            }
+          ]
+        }
+      },
+      "recommendation": {
+        "config_sha256": "a9c7e94d4b7e6298a5e75682cb2b947fc8d544ef5c279cd77c1fb8cd88cc1efd",
+        "weapons": {
+          "vandal": {
+            "damage": 40,
+            "fire_rate": 9.75,
+            "mag_size": 25,
+            "reload_time": 2.5,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          },
+          "spectre": {
+            "damage": 24,
+            "fire_rate": 13.333,
+            "mag_size": 30,
+            "reload_time": 2.5,
+            "pellets": 1,
+            "range": 50,
+            "spread_deg": 1.3,
+            "aim_spread_deg": 0.3
+          }
+        },
+        "trace": {
+          "winner": "a",
+          "first": "a",
+          "ttk_s": 0.3111,
+          "shots": {
+            "a": 3,
+            "b": 2
+          },
+          "seed": 3300000,
+          "range_m": 10,
+          "strategy": "aggressive",
+          "a": "vandal",
+          "b": "spectre",
+          "events": [
+            {
+              "time_s": 0.0,
+              "type": "initial",
+              "hp": {
+                "a": 100.0,
+                "b": 100.0
+              },
+              "ammo": {
+                "a": 25,
+                "b": 30
+              },
+              "distance_m": 10.0,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  10.0,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.106,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 60.0,
+              "ammo": 24,
+              "distance_m": 9.81,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.81,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2085,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 20.0,
+              "ammo": 23,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2126,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 24.0,
+              "target_hp": 76.0,
+              "ammo": 29,
+              "distance_m": 9.62,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.62,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.2876,
+              "type": "shot",
+              "attacker": "b",
+              "weapon": "spectre",
+              "damage": 24.0,
+              "target_hp": 52.0,
+              "ammo": 28,
+              "distance_m": 9.48,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.48,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "shot",
+              "attacker": "a",
+              "weapon": "vandal",
+              "damage": 40.0,
+              "target_hp": 0.0,
+              "ammo": 22,
+              "distance_m": 9.44,
+              "positions": {
+                "a": [
+                  0,
+                  0
+                ],
+                "b": [
+                  9.44,
+                  0
+                ]
+              }
+            },
+            {
+              "time_s": 0.3111,
+              "type": "kill",
+              "winner": "a"
+            },
+            {
+              "time_s": 0.3111,
+              "type": "terminal",
+              "winner": "a",
+              "hp": {
+                "a": 52.0,
+                "b": 0.0
+              },
+              "ammo": {
+                "a": 22,
+                "b": 28
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "explanation": {
+    "summary": "Review the code-determined verification result before playtesting.",
+    "tradeoffs": "Compare the proposal and final recommendation against the original baseline.",
+    "limitations": "Seeded weapon duels are an approximation, not live gameplay.",
+    "evidence_ids": [
+      "baseline",
+      "proposal",
+      "recommendation_baseline",
+      "recommendation_proposal",
+      "recommendation",
+      "seed_context",
+      "proposal_verification",
+      "recommendation_verification"
+    ],
+    "facts": {
+      "baseline": {
+        "duels": 16,
+        "mean_ttk_s": 0.418675,
+        "first_shooter_advantage": 0.25,
+        "max_matchup_spread": 0.5
+      },
+      "proposal": {
+        "duels": 16,
+        "mean_ttk_s": 0.45335000000000003,
+        "first_shooter_advantage": 0.125,
+        "max_matchup_spread": 0.75
+      },
+      "recommendation_baseline": {
+        "duels": 192,
+        "mean_ttk_s": 0.411575,
+        "first_shooter_advantage": 0.3020833333333333,
+        "max_matchup_spread": 0.0
+      },
+      "recommendation_proposal": {
+        "duels": 192,
+        "mean_ttk_s": 0.447875,
+        "first_shooter_advantage": 0.19791666666666669,
+        "max_matchup_spread": 0.5208333333333333
+      },
+      "recommendation": {
+        "duels": 192,
+        "mean_ttk_s": 0.447875,
+        "first_shooter_advantage": 0.19791666666666669,
+        "max_matchup_spread": 0.5208333333333333
+      },
+      "seed_context": {
+        "baseline_and_proposal": "proposal holdout",
+        "recommendation_baseline_and_proposal_and_recommendation": "independent final holdout"
+      },
+      "proposal_verification": {
+        "passed": false,
+        "training": {
+          "violations": [
+            {
+              "type": "neutral_matchup",
+              "target": {
+                "a": "vandal",
+                "b": "spectre",
+                "range": 10,
+                "strategy": "aggressive",
+                "min_rate": 0.4,
+                "max_rate": 0.6
+              },
+              "observed": 0.75
+            }
+          ],
+          "regressions": [],
+          "seed_count": 4
+        },
+        "held_out": {
+          "violations": [
+            {
+              "type": "neutral_matchup",
+              "target": {
+                "a": "vandal",
+                "b": "spectre",
+                "range": 10,
+                "strategy": "aggressive",
+                "min_rate": 0.4,
+                "max_rate": 0.6
+              },
+              "observed": 0.875
+            }
+          ],
+          "regressions": [
+            {
+              "matchup": [
+                "vandal",
+                "spectre",
+                10,
+                "flanker"
+              ],
+              "shift": 0.375
+            }
+          ],
+          "seed_count": 4
+        },
+        "duels_per_phase": 16
+      },
+      "recommendation_verification": {
+        "passed": false,
+        "violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.7604166666666666
+          }
+        ],
+        "regressions": [],
+        "proposal_regressions": [],
+        "search_seed_count": 24,
+        "heldout_seed_count": 48,
+        "discovery_seeds": {
+          "start": 3000000,
+          "end_exclusive": 3000024
+        },
+        "final_seeds": {
+          "start": 3200000,
+          "end_exclusive": 3200048
+        }
+      }
+    }
+  },
+  "explanation_model": {
+    "purpose": "explanation",
+    "status": "fallback",
+    "reason": "disabled",
+    "model": "gemini-3.5-flash-lite"
+  },
+  "source": "developer-proposed stat changes",
+  "matches": 4,
+  "changes": {
+    "spectre": {
+      "damage": 24,
+      "reload_time": 2.5
+    }
+  },
+  "before": {
+    "mode": "python_approximated_duels",
+    "rows": [
+      {
+        "a": "vandal",
+        "b": "spectre",
+        "range_m": 10,
+        "strategy": "aggressive",
+        "duels": 8,
+        "a_win_rate": 0.75,
+        "b_win_rate": 0.25,
+        "draw_rate": 0.0,
+        "median_ttk_s": 0.3952,
+        "first_shooter_win_rate": 0.75,
+        "first_shooter_advantage": 0.25
+      },
+      {
+        "a": "vandal",
+        "b": "spectre",
+        "range_m": 10,
+        "strategy": "flanker",
+        "duels": 8,
+        "a_win_rate": 0.25,
+        "b_win_rate": 0.75,
+        "draw_rate": 0.0,
+        "median_ttk_s": 0.44215,
+        "first_shooter_win_rate": 0.75,
+        "first_shooter_advantage": 0.25
+      }
+    ],
+    "summary": {
+      "duels": 16,
+      "mean_ttk_s": 0.418675,
+      "first_shooter_advantage": 0.25,
+      "max_matchup_spread": 0.5
+    },
+    "example_trace": null
+  },
+  "after": {
+    "mode": "python_approximated_duels",
+    "rows": [
+      {
+        "a": "vandal",
+        "b": "spectre",
+        "range_m": 10,
+        "strategy": "aggressive",
+        "duels": 8,
+        "a_win_rate": 0.875,
+        "b_win_rate": 0.125,
+        "draw_rate": 0.0,
+        "median_ttk_s": 0.3954,
+        "first_shooter_win_rate": 0.625,
+        "first_shooter_advantage": 0.125
+      },
+      {
+        "a": "vandal",
+        "b": "spectre",
+        "range_m": 10,
+        "strategy": "flanker",
+        "duels": 8,
+        "a_win_rate": 0.625,
+        "b_win_rate": 0.375,
+        "draw_rate": 0.0,
+        "median_ttk_s": 0.5113000000000001,
+        "first_shooter_win_rate": 0.625,
+        "first_shooter_advantage": 0.125
+      }
+    ],
+    "summary": {
+      "duels": 16,
+      "mean_ttk_s": 0.45335000000000003,
+      "first_shooter_advantage": 0.125,
+      "max_matchup_spread": 0.75
+    },
+    "example_trace": null
+  },
+  "verification": {
+    "passed": false,
+    "training": {
+      "violations": [
+        {
+          "type": "neutral_matchup",
+          "target": {
+            "a": "vandal",
+            "b": "spectre",
+            "range": 10,
+            "strategy": "aggressive",
+            "min_rate": 0.4,
+            "max_rate": 0.6
+          },
+          "observed": 0.75
+        }
+      ],
+      "regressions": [],
+      "seed_count": 4
+    },
+    "held_out": {
+      "violations": [
+        {
+          "type": "neutral_matchup",
+          "target": {
+            "a": "vandal",
+            "b": "spectre",
+            "range": 10,
+            "strategy": "aggressive",
+            "min_rate": 0.4,
+            "max_rate": 0.6
+          },
+          "observed": 0.875
+        }
+      ],
+      "regressions": [
+        {
+          "matchup": [
+            "vandal",
+            "spectre",
+            10,
+            "flanker"
+          ],
+          "shift": 0.375
+        }
+      ],
+      "seed_count": 4
+    },
+    "duels_per_phase": 16
+  },
+  "recommendation": {
+    "agent_mode": "heuristic_no_llm",
+    "candidate_accepted": false,
+    "search_budget": 28,
+    "changes": {},
+    "final_stats": {
+      "spectre": {
+        "damage": 24,
+        "reload_time": 2.5
+      }
+    },
+    "verification": {
+      "passed": false,
+      "violations": [
+        {
+          "type": "neutral_matchup",
+          "target": {
+            "a": "vandal",
+            "b": "spectre",
+            "range": 10,
+            "strategy": "aggressive",
+            "min_rate": 0.4,
+            "max_rate": 0.6
+          },
+          "observed": 0.7604166666666666
+        }
+      ],
+      "regressions": [],
+      "proposal_regressions": [],
+      "search_seed_count": 24,
+      "heldout_seed_count": 48,
+      "discovery_seeds": {
+        "start": 3000000,
+        "end_exclusive": 3000024
+      },
+      "final_seeds": {
+        "start": 3200000,
+        "end_exclusive": 3200048
+      }
+    },
+    "before": {
+      "mode": "python_approximated_duels",
+      "rows": [
+        {
+          "a": "vandal",
+          "b": "spectre",
+          "range_m": 10,
+          "strategy": "aggressive",
+          "duels": 96,
+          "a_win_rate": 0.5,
+          "b_win_rate": 0.5,
+          "draw_rate": 0.0,
+          "median_ttk_s": 0.40395000000000003,
+          "first_shooter_win_rate": 0.7291666666666666,
+          "first_shooter_advantage": 0.22916666666666663
+        },
+        {
+          "a": "vandal",
+          "b": "spectre",
+          "range_m": 10,
+          "strategy": "flanker",
+          "duels": 96,
+          "a_win_rate": 0.5,
+          "b_win_rate": 0.5,
+          "draw_rate": 0.0,
+          "median_ttk_s": 0.4192,
+          "first_shooter_win_rate": 0.875,
+          "first_shooter_advantage": 0.375
+        }
+      ],
+      "summary": {
+        "duels": 192,
+        "mean_ttk_s": 0.411575,
+        "first_shooter_advantage": 0.3020833333333333,
+        "max_matchup_spread": 0.0
+      },
+      "example_trace": null
+    },
+    "after": {
+      "mode": "python_approximated_duels",
+      "rows": [
+        {
+          "a": "vandal",
+          "b": "spectre",
+          "range_m": 10,
+          "strategy": "aggressive",
+          "duels": 96,
+          "a_win_rate": 0.7604166666666666,
+          "b_win_rate": 0.23958333333333334,
+          "draw_rate": 0.0,
+          "median_ttk_s": 0.43685,
+          "first_shooter_win_rate": 0.65625,
+          "first_shooter_advantage": 0.15625
+        },
+        {
+          "a": "vandal",
+          "b": "spectre",
+          "range_m": 10,
+          "strategy": "flanker",
+          "duels": 96,
+          "a_win_rate": 0.6979166666666666,
+          "b_win_rate": 0.3020833333333333,
+          "draw_rate": 0.0,
+          "median_ttk_s": 0.4589,
+          "first_shooter_win_rate": 0.7395833333333334,
+          "first_shooter_advantage": 0.23958333333333337
+        }
+      ],
+      "summary": {
+        "duels": 192,
+        "mean_ttk_s": 0.447875,
+        "first_shooter_advantage": 0.19791666666666669,
+        "max_matchup_spread": 0.5208333333333333
+      },
+      "example_trace": null
+    },
+    "rationale": "",
+    "candidates": [
+      {
+        "id": "candidate-1",
+        "source": "comparator",
+        "changes": {},
+        "rationale": "Unchanged proposal comparator.",
+        "eligible": false,
+        "score": 4.0,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-2",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 12.66635
+        },
+        "rationale": "Test a 95% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 4.254,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.7708333333333334
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.2292
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.7708333333333334,
+              "b_win_rate": 0.22916666666666666,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.6875,
+              "first_shooter_advantage": 0.1875
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7708333333333334,
+              "b_win_rate": 0.22916666666666666,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4628,
+              "first_shooter_win_rate": 0.6875,
+              "first_shooter_advantage": 0.1875
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.442,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5416666666666667
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-3",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 23
+        },
+        "rationale": "Test a 95% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 4.003333,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-4",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 28
+        },
+        "rationale": "Test a 95% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.005333,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-5",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.375
+        },
+        "rationale": "Test a 95% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.004,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-6",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 13.99965
+        },
+        "rationale": "Test a 105% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 4.004,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.2292
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4147,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7708333333333334,
+              "b_win_rate": 0.22916666666666666,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6875,
+              "first_shooter_advantage": 0.1875
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.4376,
+            "first_shooter_advantage": 0.19791666666666669,
+            "max_matchup_spread": 0.5416666666666667
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-7",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 25
+        },
+        "rationale": "Test a 105% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 0.086667,
+        "search_violations": [],
+        "search_regressions": [],
+        "proposal_search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.39964999999999995,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4285,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.41407499999999997,
+            "first_shooter_advantage": 0.29166666666666663,
+            "max_matchup_spread": 0.08333333333333331
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-8",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 32
+        },
+        "rationale": "Test a 105% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.005333,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-9",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.625
+        },
+        "rationale": "Test a 105% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.004,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-10",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 11.9997
+        },
+        "rationale": "Test a 90% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 4.008,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.2917
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4282,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.8333333333333334,
+              "b_win_rate": 0.16666666666666666,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4628,
+              "first_shooter_win_rate": 0.625,
+              "first_shooter_advantage": 0.125
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.4455,
+            "first_shooter_advantage": 0.16666666666666669,
+            "max_matchup_spread": 0.6666666666666667
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-11",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 22
+        },
+        "rationale": "Test a 90% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 4.006667,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-12",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 27
+        },
+        "rationale": "Test a 90% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.008,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-13",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.25
+        },
+        "rationale": "Test a 90% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.008,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-14",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 14.666300000000001
+        },
+        "rationale": "Test a 110% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 1.758,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.7291666666666666
+          }
+        ],
+        "search_regressions": [],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.7291666666666666,
+              "b_win_rate": 0.2708333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4147,
+              "first_shooter_win_rate": 0.7708333333333334,
+              "first_shooter_advantage": 0.27083333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.6875,
+              "b_win_rate": 0.3125,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.46015,
+              "first_shooter_win_rate": 0.7708333333333334,
+              "first_shooter_advantage": 0.27083333333333337
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.437425,
+            "first_shooter_advantage": 0.27083333333333337,
+            "max_matchup_spread": 0.4583333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-15",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 26
+        },
+        "rationale": "Test a 110% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 0.09,
+        "search_violations": [],
+        "search_regressions": [],
+        "proposal_search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.39964999999999995,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4285,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.41407499999999997,
+            "first_shooter_advantage": 0.29166666666666663,
+            "max_matchup_spread": 0.08333333333333331
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-16",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 33
+        },
+        "rationale": "Test a 110% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.008,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-17",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.75
+        },
+        "rationale": "Test a 110% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.008,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-18",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 11.33305
+        },
+        "rationale": "Test a 85% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 4.762,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.8125
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.3542
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.8125,
+              "b_win_rate": 0.1875,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.45089999999999997,
+              "first_shooter_win_rate": 0.6458333333333334,
+              "first_shooter_advantage": 0.14583333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.8958333333333334,
+              "b_win_rate": 0.10416666666666667,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.46725,
+              "first_shooter_win_rate": 0.5625,
+              "first_shooter_advantage": 0.0625
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.459075,
+            "first_shooter_advantage": 0.10416666666666669,
+            "max_matchup_spread": 0.7916666666666667
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-19",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 20
+        },
+        "rationale": "Test a 70% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 4.013333,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-20",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 26
+        },
+        "rationale": "Test a 85% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.010667,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-21",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.125
+        },
+        "rationale": "Test a 85% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.012,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-22",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 15.9996
+        },
+        "rationale": "Test a 120% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 0.266,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.6041666666666666
+          }
+        ],
+        "search_regressions": [],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.6041666666666666,
+              "b_win_rate": 0.3958333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4063,
+              "first_shooter_win_rate": 0.7708333333333334,
+              "first_shooter_advantage": 0.27083333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.625,
+              "b_win_rate": 0.375,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4471,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.42669999999999997,
+            "first_shooter_advantage": 0.23958333333333337,
+            "max_matchup_spread": 0.25
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-23",
+        "source": "heuristic",
+        "changes": {
+          "spectre.damage": 29
+        },
+        "rationale": "Test a 120% scaling of spectre.damage.",
+        "eligible": false,
+        "score": 0.1,
+        "search_violations": [],
+        "search_regressions": [],
+        "proposal_search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.39964999999999995,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.5416666666666666,
+              "b_win_rate": 0.4583333333333333,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4285,
+              "first_shooter_win_rate": 0.7916666666666666,
+              "first_shooter_advantage": 0.29166666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.41407499999999997,
+            "first_shooter_advantage": 0.29166666666666663,
+            "max_matchup_spread": 0.08333333333333331
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-24",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 36
+        },
+        "rationale": "Test a 120% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.016,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-25",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 3.0
+        },
+        "rationale": "Test a 120% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.016,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-26",
+        "source": "heuristic",
+        "changes": {
+          "spectre.fire_rate": 10.666400000000001
+        },
+        "rationale": "Test a 80% scaling of spectre.fire_rate.",
+        "eligible": false,
+        "score": 4.766,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.8125
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.3125
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.8125,
+              "b_win_rate": 0.1875,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.45565,
+              "first_shooter_win_rate": 0.6875,
+              "first_shooter_advantage": 0.1875
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.8541666666666666,
+              "b_win_rate": 0.14583333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.47009999999999996,
+              "first_shooter_win_rate": 0.6041666666666666,
+              "first_shooter_advantage": 0.10416666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.462875,
+            "first_shooter_advantage": 0.14583333333333331,
+            "max_matchup_spread": 0.7083333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-27",
+        "source": "heuristic",
+        "changes": {
+          "spectre.mag_size": 24
+        },
+        "rationale": "Test a 79% scaling of spectre.mag_size.",
+        "eligible": false,
+        "score": 4.016,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      },
+      {
+        "id": "candidate-28",
+        "source": "heuristic",
+        "changes": {
+          "spectre.reload_time": 2.0
+        },
+        "rationale": "Test a 80% scaling of spectre.reload_time.",
+        "eligible": false,
+        "score": 4.016,
+        "search_violations": [
+          {
+            "type": "neutral_matchup",
+            "target": {
+              "a": "vandal",
+              "b": "spectre",
+              "range": 10,
+              "strategy": "aggressive",
+              "min_rate": 0.4,
+              "max_rate": 0.6
+            },
+            "observed": 0.75
+          }
+        ],
+        "search_regressions": [
+          {
+            "matchup": [
+              "vandal",
+              "spectre",
+              10,
+              "flanker"
+            ],
+            "shift": 0.25
+          }
+        ],
+        "proposal_search_regressions": [],
+        "metrics": {
+          "mode": "python_approximated_duels",
+          "rows": [
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "aggressive",
+              "duels": 48,
+              "a_win_rate": 0.75,
+              "b_win_rate": 0.25,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4212,
+              "first_shooter_win_rate": 0.7083333333333334,
+              "first_shooter_advantage": 0.20833333333333337
+            },
+            {
+              "a": "vandal",
+              "b": "spectre",
+              "range_m": 10,
+              "strategy": "flanker",
+              "duels": 48,
+              "a_win_rate": 0.7916666666666666,
+              "b_win_rate": 0.20833333333333334,
+              "draw_rate": 0.0,
+              "median_ttk_s": 0.4605,
+              "first_shooter_win_rate": 0.6666666666666666,
+              "first_shooter_advantage": 0.16666666666666663
+            }
+          ],
+          "summary": {
+            "duels": 96,
+            "mean_ttk_s": 0.44085,
+            "first_shooter_advantage": 0.1875,
+            "max_matchup_spread": 0.5833333333333333
+          },
+          "example_trace": null
+        }
+      }
+    ],
+    "model": {
+      "status": "fallback",
+      "reason": "disabled"
+    },
+    "chosen": null,
+    "explanation": {
+      "summary": "Review the code-determined verification result before playtesting.",
+      "tradeoffs": "Compare the proposal and final recommendation against the original baseline.",
+      "limitations": "Seeded weapon duels are an approximation, not live gameplay.",
+      "evidence_ids": [
+        "baseline",
+        "proposal",
+        "recommendation_baseline",
+        "recommendation_proposal",
+        "recommendation",
+        "seed_context",
+        "proposal_verification",
+        "recommendation_verification"
+      ],
+      "facts": {
+        "baseline": {
+          "duels": 16,
+          "mean_ttk_s": 0.418675,
+          "first_shooter_advantage": 0.25,
+          "max_matchup_spread": 0.5
+        },
+        "proposal": {
+          "duels": 16,
+          "mean_ttk_s": 0.45335000000000003,
+          "first_shooter_advantage": 0.125,
+          "max_matchup_spread": 0.75
+        },
+        "recommendation_baseline": {
+          "duels": 192,
+          "mean_ttk_s": 0.411575,
+          "first_shooter_advantage": 0.3020833333333333,
+          "max_matchup_spread": 0.0
+        },
+        "recommendation_proposal": {
+          "duels": 192,
+          "mean_ttk_s": 0.447875,
+          "first_shooter_advantage": 0.19791666666666669,
+          "max_matchup_spread": 0.5208333333333333
+        },
+        "recommendation": {
+          "duels": 192,
+          "mean_ttk_s": 0.447875,
+          "first_shooter_advantage": 0.19791666666666669,
+          "max_matchup_spread": 0.5208333333333333
+        },
+        "seed_context": {
+          "baseline_and_proposal": "proposal holdout",
+          "recommendation_baseline_and_proposal_and_recommendation": "independent final holdout"
+        },
+        "proposal_verification": {
+          "passed": false,
+          "training": {
+            "violations": [
+              {
+                "type": "neutral_matchup",
+                "target": {
+                  "a": "vandal",
+                  "b": "spectre",
+                  "range": 10,
+                  "strategy": "aggressive",
+                  "min_rate": 0.4,
+                  "max_rate": 0.6
+                },
+                "observed": 0.75
+              }
+            ],
+            "regressions": [],
+            "seed_count": 4
+          },
+          "held_out": {
+            "violations": [
+              {
+                "type": "neutral_matchup",
+                "target": {
+                  "a": "vandal",
+                  "b": "spectre",
+                  "range": 10,
+                  "strategy": "aggressive",
+                  "min_rate": 0.4,
+                  "max_rate": 0.6
+                },
+                "observed": 0.875
+              }
+            ],
+            "regressions": [
+              {
+                "matchup": [
+                  "vandal",
+                  "spectre",
+                  10,
+                  "flanker"
+                ],
+                "shift": 0.375
+              }
+            ],
+            "seed_count": 4
+          },
+          "duels_per_phase": 16
+        },
+        "recommendation_verification": {
+          "passed": false,
+          "violations": [
+            {
+              "type": "neutral_matchup",
+              "target": {
+                "a": "vandal",
+                "b": "spectre",
+                "range": 10,
+                "strategy": "aggressive",
+                "min_rate": 0.4,
+                "max_rate": 0.6
+              },
+              "observed": 0.7604166666666666
+            }
+          ],
+          "regressions": [],
+          "proposal_regressions": [],
+          "search_seed_count": 24,
+          "heldout_seed_count": 48,
+          "discovery_seeds": {
+            "start": 3000000,
+            "end_exclusive": 3000024
+          },
+          "final_seeds": {
+            "start": 3200000,
+            "end_exclusive": 3200048
+          }
+        }
+      }
+    },
+    "explanation_model": {
+      "purpose": "explanation",
+      "status": "fallback",
+      "reason": "disabled",
+      "model": "gemini-3.5-flash-lite"
+    }
+  },
+  "profile_source": {
+    "source": "Valorant-API weapon catalog (unofficial)",
+    "profile_id": "valorant",
+    "source_url": "https://valorant-api.com/v1/weapons",
+    "retrieved_at": "2026-11-14T22:35:28Z",
+    "version": "13.10.00.5893614",
+    "catalog_sha256": "a430d59172da77316638d372c135f827da09bfc32b36dcae5b923ed844a0d9e1",
+    "damage_context": "body damage at 10 meters",
+    "assumptions": [
+      "Body damage only at 10m; aggressive and flanker strategies close distance, keeping encounters within the Spectre 0\u201315m band.",
+      "Range 50m and spread 1.3 degrees / aimed spread 0.3 degrees are simulator assumptions, not VALORANT accuracy measurements.",
+      "The engine uses 100 health, no armor or headshots, simplified hit probability and range falloff, assumed reaction and movement, and no agent abilities.",
+      "Outcomes are simulated illustrative duels, not observed VALORANT balance or telemetry."
+    ],
+    "weapons": {
+      "vandal": {
+        "damage": 40,
+        "fire_rate": 9.75,
+        "mag_size": 25,
+        "reload_time": 2.5,
+        "pellets": 1,
+        "range": 50,
+        "spread_deg": 1.3,
+        "aim_spread_deg": 0.3
+      },
+      "spectre": {
+        "damage": 26,
+        "fire_rate": 13.333,
+        "mag_size": 30,
+        "reload_time": 2.25,
+        "pellets": 1,
+        "range": 50,
+        "spread_deg": 1.3,
+        "aim_spread_deg": 0.3
+      }
+    }
+  },
+  "policy": {
+    "ranges": [
+      10
+    ],
+    "strategies": [
+      "aggressive",
+      "flanker"
+    ],
+    "weapons": [
+      "vandal",
+      "spectre"
+    ],
+    "search_seeds": 24,
+    "verification_seeds": 48,
+    "verification_seed_offset": 100000,
+    "neutral_matchups": [
+      {
+        "a": "vandal",
+        "b": "spectre",
+        "range": 10,
+        "strategy": "aggressive",
+        "min_rate": 0.4,
+        "max_rate": 0.6
+      }
+    ],
+    "max_first_shooter_edge": 0.4,
+    "max_off_target_regression": 0.2,
+    "allowed_parameters": {
+      "spectre.fire_rate": [
+        10,
+        16
+      ],
+      "spectre.damage": [
+        20,
+        32
+      ],
+      "spectre.mag_size": [
+        20,
+        40
+      ],
+      "spectre.reload_time": [
+        1.5,
+        3.0
+      ],
+      "vandal.fire_rate": [
+        7.5,
+        12
+      ],
+      "vandal.damage": [
+        32,
+        48
+      ],
+      "vandal.mag_size": [
+        15,
+        35
+      ],
+      "vandal.reload_time": [
+        1.75,
+        3.25
+      ]
+    },
+    "target_weapon": "spectre"
+  },
+  "run_id": "00000000000000000000000000000003"
+}

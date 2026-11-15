@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import math
+import os
 from pathlib import Path
 import threading
 import uuid
@@ -24,6 +25,7 @@ from .simulation import balance_violations, regression_violations, run_suite, va
 ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / 'web'
 RESULTS_ROOT = ROOT / 'results'
+STARTER_RUNS_ROOT = ROOT / 'fixtures' / 'starter_runs'
 DEMO_RUN_ID = 'e8c18635e27c470d9b459df4ea520245'
 LOCK = threading.Lock()
 RUNS = {}
@@ -315,6 +317,8 @@ class DeveloperHandler(BaseHTTPRequestHandler):
                 with LOCK:
                     run = RUNS[parts[1]]
                     file_path = run.get('report_path' if parts[2] == 'report' else 'json_path' if parts[2] == 'json' else '')
+                if file_path:
+                    file_path = ROOT / file_path
                 if not file_path or not Path(file_path).is_file():
                     self._json(404, {'error': 'Report is not available'})
                     return
@@ -374,18 +378,19 @@ class DeveloperHandler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--port', type=int, default=8765)
+    parser.add_argument('--host', default=os.environ.get('HOST', '127.0.0.1'))
+    parser.add_argument('--port', type=int, default=int(os.environ.get('PORT', '8765')))
     parser.add_argument('--weapons', help='Exported weapon JSON; defaults to the included snapshot')
     parser.add_argument('--policy', help='Balance policy JSON; defaults to the included policy')
     args = parser.parse_args()
     load_inputs(args.weapons, args.policy)
+    RUNS.update(load_runs(STARTER_RUNS_ROOT))
     RUNS.update(load_runs(RESULTS_ROOT))
     RUNS.setdefault(DEMO_RUN_ID, load_demo_run())
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), DeveloperHandler)
+    server = ThreadingHTTPServer((args.host, args.port), DeveloperHandler)
     server.weapons_path = args.weapons
     server.policy_path = args.policy
-    print(f'RAGENT developer UI: http://127.0.0.1:{args.port}')
-    print('Bound to localhost only; press Ctrl+C to stop.')
+    print(f'RAGENT developer UI listening on {args.host}:{args.port}; press Ctrl+C to stop.')
     try:
         server.serve_forever()
     except KeyboardInterrupt:

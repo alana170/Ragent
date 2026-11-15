@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAGENT Proposed Change Report</title><style>
+*{box-sizing:border-box}body{margin:0;background:#0a0a0a;color:#f5f0e8;font:14px/1.6 Inter,system-ui,sans-serif}header{background:linear-gradient(115deg,#151515,#291a1c);border-bottom:1px solid #363030;padding:42px max(5vw,24px)}header p{color:#aaa39d;margin:6px 0}h1{font-size:38px;margin:4px 0;letter-spacing:-1.5px}h2{font-size:21px;letter-spacing:-.5px;margin:0 0 16px}h3{font-size:13px;margin:0 0 10px}.tag{font:600 10px monospace;letter-spacing:.14em;color:#ff4655;text-transform:uppercase}main{padding:26px 5vw;max-width:1450px;margin:auto}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.kpi{border:1px solid #363030;background:#151515;border-radius:10px;padding:19px;box-shadow:0 8px 25px #00000000}.kpi small{color:#aaa39d}.kpi strong{font-size:24px;letter-spacing:-.6px;display:block;margin-top:5px}.note{font-size:13px;color:#aaa39d}.warn{color:#f1b0b5;background:#291a1c;border:1px solid #533236;border-radius:10px;padding:14px 17px;font-size:13px}section{margin-top:32px}section>p,li{color:#bcb3ad}.scroll{overflow-x:auto;background:#151515;border:1px solid #363030;border-radius:10px}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{border-bottom:1px solid #333;padding:12px;text-align:left}th{background:#202020;color:#aaa39d;font-size:11px}tr:last-child td{border-bottom:0}.rate{font-weight:700}.good{color:#26845d;background:#eaf7f0}.hot{color:#bc5b54;background:#1515150ef}.cold{color:#ad7938;background:#1515155e8}pre{margin:0;padding:16px;border:1px solid #363030;border-radius:10px;background:#151515;color:#e7d5d5;white-space:pre-wrap;word-break:break-word;font:12px/1.7 monospace}footer{padding:25px 5vw;border-top:1px solid #363030;color:#aaa39d;margin-top:36px;font-size:11px}@media print{body{background:#151515}header{padding:20px 0}main{padding:10px 0}.scroll{overflow:visible}section{break-inside:avoid}footer{padding:15px 0}}
+
+header{background:radial-gradient(ellipse at 80% 30%,#38191d,transparent 55%),#111}h1,h2{font-family:'Bebas Neue',Impact,sans-serif;text-transform:uppercase;letter-spacing:.03em}h1{font-size:48px}h2{font-size:28px}.kpi,.scroll,.data-card,.warn,pre{border-radius:0}.good{background:#19302a;color:#a2ddc3}.hot,.cold{background:#392528;color:#ffadb2}@media print{body{background:#fff;color:#111}header{background:#fff;color:#111}.kpi,.data-card,.scroll{background:#fff;color:#111} .data-list dd{color:#111}}
+</style></head>
+    <body><header><div class="tag">THE RAGENTS / DEVHACKS 2026</div><h1>RAGENT</h1><p>Proposed change evaluation</p></header><main>
+    <p class="warn">Synthetic stat-level simulation only. This is not OpenFire 3D gameplay, Riot gameplay data, or proof of player retention.</p>
+    <p>Developer-proposed changes · 4 paired seeds per matchup · 16 held-out duels · Guardrails: <strong>NEEDS REVIEW</strong></p>
+    <section><h2>Before vs after — QA metrics</h2><div class="summary"><div class="kpi"><small>Before: max matchup spread</small><strong>50.00%</strong></div><div class="kpi"><small>After: max matchup spread</small><strong>75.00%</strong></div><div class="kpi"><small>Before: first-shooter advantage</small><strong>25.00%</strong></div><div class="kpi"><small>After: first-shooter advantage</small><strong>12.50%</strong></div><div class="kpi"><small>Before: mean TTK</small><strong>0.42s</strong></div><div class="kpi"><small>After: mean TTK</small><strong>0.45s</strong></div><div class="kpi"><small>Guardrails</small><strong>NEEDS REVIEW</strong></div></div></section>
+    <section><h2>Developer proposal and verification</h2><div class="summary"><div><h3>Proposed stat changes</h3><div class="data-card"><dl class="data-list"><div><dt>Spectre</dt><dd><dl class="data-list"><div><dt>Damage</dt><dd>24</dd></div><div><dt>Reload Time</dt><dd>2.5000</dd></div></dl></dd></div></dl></div></div><div><h3>Training + held-out guardrails</h3><div class="data-card"><dl class="data-list"><div><dt>Passed</dt><dd>No</dd></div><div><dt>Training</dt><dd><dl class="data-list"><div><dt>Violations</dt><dd><ul class="data-items"><li><dl class="data-list"><div><dt>Type</dt><dd>neutral_matchup</dd></div><div><dt>Target</dt><dd><dl class="data-list"><div><dt>A</dt><dd>vandal</dd></div><div><dt>B</dt><dd>spectre</dd></div><div><dt>Range</dt><dd>10</dd></div><div><dt>Strategy</dt><dd>aggressive</dd></div><div><dt>Min Rate</dt><dd>0.4000</dd></div><div><dt>Max Rate</dt><dd>0.6000</dd></div></dl></dd></div><div><dt>Observed</dt><dd>0.7500</dd></div></dl></li></ul></dd></div><div><dt>Regressions</dt><dd><span class="data-empty">None</span></dd></div><div><dt>Seed Count</dt><dd>4</dd></div></dl></dd></div><div><dt>Held Out</dt><dd><dl class="data-list"><div><dt>Violations</dt><dd><ul class="data-items"><li><dl class="data-list"><div><dt>Type</dt><dd>neutral_matchup</dd></div><div><dt>Target</dt><dd><dl class="data-list"><div><dt>A</dt><dd>vandal</dd></div><div><dt>B</dt><dd>spectre</dd></div><div><dt>Range</dt><dd>10</dd></div><div><dt>Strategy</dt><dd>aggressive</dd></div><div><dt>Min Rate</dt><dd>0.4000</dd></div><div><dt>Max Rate</dt><dd>0.6000</dd></div></dl></dd></div><div><dt>Observed</dt><dd>0.8750</dd></div></dl></li></ul></dd></div><div><dt>Regressions</dt><dd><ul class="data-items"><li><dl class="data-list"><div><dt>Matchup</dt><dd><ul class="data-items"><li>vandal</li><li>spectre</li><li>10</li><li>flanker</li></ul></dd></div><div><dt>Shift</dt><dd>0.3750</dd></div></dl></li></ul></dd></div><div><dt>Seed Count</dt><dd>4</dd></div></dl></dd></div><div><dt>Duels Per Phase</dt><dd>16</dd></div></dl></div></div></div></section>
+    <section><h2>Final agent recommendation</h2><p>Agent mode: <strong>heuristic_no_llm</strong> · 28 bounded candidates tested · Recommendation: <strong>NEEDS REVIEW</strong></p><div class="summary"><div><h3>Additional adjustment to developer proposal</h3><div class="data-card"><p class="empty-data">No additional changes.</p></div></div><div><h3>Recommended final stats</h3><div class="data-card"><dl class="data-list"><div><dt>Spectre</dt><dd><dl class="data-list"><div><dt>Damage</dt><dd>24</dd></div><div><dt>Reload Time</dt><dd>2.5000</dd></div></dl></dd></div></dl></div></div><div><h3>Recommendation held-out checks</h3><div class="data-card"><dl class="data-list"><div><dt>Passed</dt><dd>No</dd></div><div><dt>Violations</dt><dd><ul class="data-items"><li><dl class="data-list"><div><dt>Type</dt><dd>neutral_matchup</dd></div><div><dt>Target</dt><dd><dl class="data-list"><div><dt>A</dt><dd>vandal</dd></div><div><dt>B</dt><dd>spectre</dd></div><div><dt>Range</dt><dd>10</dd></div><div><dt>Strategy</dt><dd>aggressive</dd></div><div><dt>Min Rate</dt><dd>0.4000</dd></div><div><dt>Max Rate</dt><dd>0.6000</dd></div></dl></dd></div><div><dt>Observed</dt><dd>0.7604</dd></div></dl></li></ul></dd></div><div><dt>Regressions</dt><dd><span class="data-empty">None</span></dd></div><div><dt>Proposal Regressions</dt><dd><span class="data-empty">None</span></dd></div><div><dt>Search Seed Count</dt><dd>24</dd></div><div><dt>Heldout Seed Count</dt><dd>48</dd></div><div><dt>Discovery Seeds</dt><dd><dl class="data-list"><div><dt>Start</dt><dd>3000000</dd></div><div><dt>End Exclusive</dt><dd>3000024</dd></div></dl></dd></div><div><dt>Final Seeds</dt><dd><dl class="data-list"><div><dt>Start</dt><dd>3200000</dd></div><div><dt>End Exclusive</dt><dd>3200048</dd></div></dl></dd></div></dl></div></div></div><p>Final stats are the developer's proposed values plus the selected agent adjustment. An empty adjustment means the agent selected no additional change.</p></section>
+    <section><h2>Per-matchup win rate and median TTK</h2><div class="scroll"><table><thead><tr><th>Weapon pairing</th><th>Range</th><th>Bot style</th><th>Before A win%</th><th>After A win%</th><th>Before median TTK (s)</th><th>After median TTK (s)</th></tr></thead><tbody><tr><td>vandal vs spectre</td><td>10m</td><td>aggressive</td><td>75.0000%</td><td class='rate hot'>87.5000%</td><td>0.3952</td><td>0.3954</td></tr><tr><td>vandal vs spectre</td><td>10m</td><td>flanker</td><td>25.0000%</td><td class='rate hot'>62.5000%</td><td>0.4421</td><td>0.5113</td></tr></tbody></table></div></section>
+    <section><h2>Explanation and model status</h2><pre>{
+  &quot;summary&quot;: &quot;Review the code-determined verification result before playtesting.&quot;,
+  &quot;tradeoffs&quot;: &quot;Compare the proposal and final recommendation against the original baseline.&quot;,
+  &quot;limitations&quot;: &quot;Seeded weapon duels are an approximation, not live gameplay.&quot;,
+  &quot;evidence_ids&quot;: [
+    &quot;baseline&quot;,
+    &quot;proposal&quot;,
+    &quot;recommendation_baseline&quot;,
+    &quot;recommendation_proposal&quot;,
+    &quot;recommendation&quot;,
+    &quot;seed_context&quot;,
+    &quot;proposal_verification&quot;,
+    &quot;recommendation_verification&quot;
+  ],
+  &quot;facts&quot;: {
+    &quot;baseline&quot;: {
+      &quot;duels&quot;: 16,
+      &quot;mean_ttk_s&quot;: &quot;0.4187&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.2500&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.5000&quot;
+    },
+    &quot;proposal&quot;: {
+      &quot;duels&quot;: 16,
+      &quot;mean_ttk_s&quot;: &quot;0.4534&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.1250&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.7500&quot;
+    },
+    &quot;recommendation_baseline&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4116&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.3021&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.0000&quot;
+    },
+    &quot;recommendation_proposal&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4479&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.1979&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.5208&quot;
+    },
+    &quot;recommendation&quot;: {
+      &quot;duels&quot;: 192,
+      &quot;mean_ttk_s&quot;: &quot;0.4479&quot;,
+      &quot;first_shooter_advantage&quot;: &quot;0.1979&quot;,
+      &quot;max_matchup_spread&quot;: &quot;0.5208&quot;
+    },
+    &quot;seed_context&quot;: {
+      &quot;baseline_and_proposal&quot;: &quot;proposal holdout&quot;,
+      &quot;recommendation_baseline_and_proposal_and_recommendation&quot;: &quot;independent final holdout&quot;
+    },
+    &quot;proposal_verification&quot;: {
+      &quot;passed&quot;: false,
+      &quot;training&quot;: {
+        &quot;violations&quot;: [
+          {
+            &quot;type&quot;: &quot;neutral_matchup&quot;,
+            &quot;target&quot;: {
+              &quot;a&quot;: &quot;vandal&quot;,
+              &quot;b&quot;: &quot;spectre&quot;,
+              &quot;range&quot;: 10,
+              &quot;strategy&quot;: &quot;aggressive&quot;,
+              &quot;min_rate&quot;: &quot;0.4000&quot;,
+              &quot;max_rate&quot;: &quot;0.6000&quot;
+            },
+            &quot;observed&quot;: &quot;0.7500&quot;
+          }
+        ],
+        &quot;regressions&quot;: [],
+        &quot;seed_count&quot;: 4
+      },
+      &quot;held_out&quot;: {
+        &quot;violations&quot;: [
+          {
+            &quot;type&quot;: &quot;neutral_matchup&quot;,
+            &quot;target&quot;: {
+              &quot;a&quot;: &quot;vandal&quot;,
+              &quot;b&quot;: &quot;spectre&quot;,
+              &quot;range&quot;: 10,
+              &quot;strategy&quot;: &quot;aggressive&quot;,
+              &quot;min_rate&quot;: &quot;0.4000&quot;,
+              &quot;max_rate&quot;: &quot;0.6000&quot;
+            },
+            &quot;observed&quot;: &quot;0.8750&quot;
+          }
+        ],
+        &quot;regressions&quot;: [
+          {
+            &quot;matchup&quot;: [
+              &quot;vandal&quot;,
+              &quot;spectre&quot;,
+              10,
+              &quot;flanker&quot;
+            ],
+            &quot;shift&quot;: &quot;0.3750&quot;
+          }
+        ],
+        &quot;seed_count&quot;: 4
+      },
+      &quot;duels_per_phase&quot;: 16
+    },
+    &quot;recommendation_verification&quot;: {
+      &quot;passed&quot;: false,
+      &quot;violations&quot;: [
+        {
+          &quot;type&quot;: &quot;neutral_matchup&quot;,
+          &quot;target&quot;: {
+            &quot;a&quot;: &quot;vandal&quot;,
+            &quot;b&quot;: &quot;spectre&quot;,
+            &quot;range&quot;: 10,
+            &quot;strategy&quot;: &quot;aggressive&quot;,
+            &quot;min_rate&quot;: &quot;0.4000&quot;,
+            &quot;max_rate&quot;: &quot;0.6000&quot;
+          },
+          &quot;observed&quot;: &quot;0.7604&quot;
+        }
+      ],
+      &quot;regressions&quot;: [],
+      &quot;proposal_regressions&quot;: [],
+      &quot;search_seed_count&quot;: 24,
+      &quot;heldout_seed_count&quot;: 48,
+      &quot;discovery_seeds&quot;: {
+        &quot;start&quot;: 3000000,
+        &quot;end_exclusive&quot;: 3000024
+      },
+      &quot;final_seeds&quot;: {
+        &quot;start&quot;: 3200000,
+        &quot;end_exclusive&quot;: 3200048
+      }
+    }
+  }
+}</pre><pre>{
+  &quot;purpose&quot;: &quot;explanation&quot;,
+  &quot;status&quot;: &quot;fallback&quot;,
+  &quot;reason&quot;: &quot;disabled&quot;,
+  &quot;model&quot;: &quot;gemini-3.5-flash-lite&quot;
+}</pre></section>
+    <section><h2>Metric definitions</h2><ul><li>Win rate: A wins plus half of draws, divided by duels, with both starting orders paired for each seed.</li><li>Median TTK: median elimination time among decisive duels in each matchup; summary mean is the mean of matchup medians.</li><li>First-shooter advantage: absolute distance of each matchup's first-shooter win rate from 50%, averaged across matchups.</li><li>Maximum matchup spread: largest range between weapon win rates within any fixed distance and bot style.</li><li>Guardrails check configured neutral-matchup bands, first-shooter threshold, and off-target regression limit.</li></ul></section>
+    </main><footer>RAGENT · Developer-proposed change QA · Approximate seeded simulation only.</footer></body></html>
