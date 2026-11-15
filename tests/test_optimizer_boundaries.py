@@ -33,6 +33,36 @@ def test_candidates_are_validated_and_seed_ranges_are_disjoint():
     json.dumps(result, allow_nan=False)
 
 
+def test_invalid_and_duplicate_candidates_do_not_consume_budget():
+    suggestions = [
+        {'changes': {'w.damage': 21}, 'rationale': 'out of bounds'},
+        {'changes': {'w.damage': 11}, 'rationale': 'first valid candidate'},
+        {'changes': {'w.damage': 11}, 'rationale': 'duplicate candidate'},
+    ]
+    paired_adjustment = {'changes': {'w.damage': 12, 'w.fire_rate': 12.0},
+                         'rationale': 'paired heuristic adjustment'}
+    with patch.object(agent, 'run_suite', side_effect=fake_suite), \
+         patch.object(agent, 'balance_violations', return_value=[]), \
+         patch.object(agent, '_regression', return_value=[]), \
+         patch.object(agent, '_heuristic_candidates', return_value=[
+             {'changes': {'w.fire_rate': 11.0}, 'rationale': 'unique heuristic adjustment'},
+             paired_adjustment,
+         ]):
+        result = agent.optimize(
+            WEAPONS,
+            dict(POLICY, candidate_budget=4),
+            suggestion_provider=lambda *_: (suggestions, {'status': 'live'}),
+        )
+
+    assert result['search_budget'] == 4
+    assert sum('error' not in candidate and 'metrics' in candidate for candidate in result['candidates']) == 4
+    assert [candidate['error'] for candidate in result['candidates'] if 'error' in candidate] == [
+        'Invalid value w.damage: 21',
+        'Duplicate candidate',
+    ]
+    assert any(candidate['changes'] == paired_adjustment['changes'] for candidate in result['candidates'])
+
+
 def test_original_regression_blocks_candidate_and_no_eligible_is_selected():
     original = deepcopy(WEAPONS)
     original['w']['damage'] = 9

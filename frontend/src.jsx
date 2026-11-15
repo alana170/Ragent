@@ -152,9 +152,10 @@ function EvidencePanel({ run, recorded }) {
 function CandidatePanel({ recommendation }) {
   const candidates = recommendation?.candidates;
   if (!Array.isArray(candidates)) return <Panel className="empty-state"><h3>Candidate inspection unavailable</h3><p>This run does not contain candidate records.</p></Panel>;
-  return <Panel className="candidate-panel"><SectionHeading eyebrow="SEARCH AUDIT" title="Candidates tested" description="Sources and outcomes are recorded by the search; only verified candidates can become recommendations." />
+  return <details className="panel candidate-panel candidate-accordion">
+    <summary><SectionHeading eyebrow="SEARCH AUDIT" title="Candidates tested" description="Sources and outcomes are recorded by the search; only verified candidates can become recommendations." /><ChevronDown size={18} aria-hidden="true" /></summary>
     {candidates.length ? <div className="table-scroll"><table className="matchup-table"><thead><tr><th>Candidate</th><th>Source</th><th>Changes</th><th>Outcome</th></tr></thead><tbody>{candidates.map((candidate, index) => <tr key={candidate.id || index}><td>{candidate.id || `Candidate ${index + 1}`}</td><td>{candidate.source || 'Unavailable'}</td><td><code>{JSON.stringify(candidate.changes || {})}</code></td><td>{candidate.eligible === false ? 'Ineligible' : candidate.eligible === true ? 'Eligible' : 'See details'}{candidate.score != null && <small className="candidate-detail">Search score: {candidate.score}</small>}{candidate.metrics?.summary && <small className="candidate-detail">Mean TTK: {candidate.metrics.summary.mean_ttk_s?.toFixed(2) ?? '—'}s · Max spread: {candidate.metrics.summary.max_matchup_spread != null ? formatPercent(candidate.metrics.summary.max_matchup_spread) : '—'}</small>}{candidate.rationale && <small className="candidate-detail">{candidate.rationale}</small>}{candidate.error && <small className="candidate-detail">{candidate.error}</small>}{['search_violations', 'search_regressions', 'proposal_search_regressions'].flatMap(key => (candidate[key] || []).map(item => typeof item === 'string' ? item : JSON.stringify(item))).map((reason, i) => <small className="candidate-detail" key={i}>{typeof reason === 'string' ? reason : JSON.stringify(reason)}</small>)}</td></tr>)}</tbody></table></div> : <p>No candidates were recorded.</p>}
-  </Panel>;
+  </details>;
 }
 function SlidersIcon() { return <Swords size={20} />; }
 
@@ -194,7 +195,7 @@ function App() {
     }).catch(reason => { if (!cancelled) setError(reason.message); });
     return () => { cancelled = true; };
   }, [profile]);
-  const refreshRuns = () => api.runs().then(items => { setSavedRuns(items.filter(item => item.profile === 'valorant')); setSavedError(''); }).catch(() => setSavedError('Saved runs are unavailable on this server.'));
+  const refreshRuns = () => api.runs().then(items => { setSavedRuns(items.filter(item => item.profile === 'valorant').sort((a, b) => Number(Boolean(b.is_demo)) - Number(Boolean(a.is_demo)))); setSavedError(''); }).catch(() => setSavedError('Saved runs are unavailable on this server.'));
   useEffect(() => { refreshRuns(); api.content().then(setContent).catch(() => setContent(null)); }, []);
   const openRun = async id => {
     if (!id) return;
@@ -269,7 +270,7 @@ function App() {
 
   return <div className="app-shell">
     <header className="topbar"><a href="#overview" className="brand"><span className="brand-mark"><Crosshair size={21} /></span><span>RAGENT<span className="brand-dot">.</span></span></a>
-      <nav className="site-nav" aria-label="Main navigation"><a href="#overview" aria-current={page === 'overview' ? 'page' : undefined}>Overview</a><a href="#reports" aria-current={page === 'reports' ? 'page' : undefined}>Reports</a><a href="#developer" aria-current={page === 'developer' ? 'page' : undefined}>Developer lab</a></nav><div className="topbar-right"><span className="env-label"><span className="env-dot" /> LOCAL DEV ENVIRONMENT</span><span className="topbar-divider" /><span className="avatar">QA</span></div>
+      <nav className="site-nav" aria-label="Main navigation"><a href="#overview" aria-current={page === 'overview' ? 'page' : undefined}>Overview</a><a href="#developer" aria-current={page === 'developer' ? 'page' : undefined}>Developer lab</a><a href="#reports" aria-current={page === 'reports' ? 'page' : undefined}>Reports</a></nav><div className="topbar-right"><span className="env-label"><span className="env-dot" /> LOCAL DEV ENVIRONMENT</span><span className="topbar-divider" /><span className="avatar">QA</span></div>
     </header>
     <main className="workspace">
       {page === 'overview' && <div className="overview-page">
@@ -282,7 +283,7 @@ function App() {
       {page !== 'overview' && <><div className="page-intro"><div><div className="eyebrow">GAME BALANCE QUALITY ASSURANCE</div><h1>{page === 'developer' ? 'Developer Lab' : 'Reports'}</h1><p>{page === 'developer' ? 'Configure a proposed change and test its impact.' : 'Review the evidence behind your latest balance check.'}</p></div>
         <div className="run-badge"><FlaskConical size={16} /><span>Stat-level simulation</span></div>
       </div>
-      <div className="context-bar"><strong>VALORANT weapon lab</strong><label>Saved runs <select value={run?.id || ''} disabled={busy} onChange={event => openRun(event.target.value)}><option value="">Select a run</option>{savedRuns.map(item => <option key={item.id} value={item.id}>{item.example_label ? `Example · ${item.example_label}` : `${item.status} · ${item.id.slice(0, 8)}`} </option>)}</select></label><span>{savedError || (content ? `${content.source} · ${content.version || 'version unavailable'} · retrieved ${content.retrieved_at || 'unknown'}` : 'Pinned source data supplied by the server.')}</span></div>
+      <div className="context-bar"><strong>VALORANT weapon lab</strong><label>Saved runs <select value={run?.id || ''} disabled={busy} onChange={event => openRun(event.target.value)}><option value="">Select a run</option>{savedRuns.map(item => <option key={item.id} value={item.id}>{item.example_label ? `Example · ${item.example_label}` : item.is_demo ? `Demo · ${item.label}` : `${item.status} · ${item.id.slice(0, 8)}`}</option>)}</select>{savedError && <small className="saved-error" role="alert">{savedError}</small>}</label></div>
       {config.source && <details className="source-details"><summary>Profile source and model assumptions</summary><p>{config.source.source || 'Source unavailable'} {config.source.version && `· ${config.source.version}`} {config.source.retrieved_at && `· retrieved ${config.source.retrieved_at}`}</p>{config.source.damage_context && <p>Damage context: {config.source.damage_context}</p>}{config.source.assumptions?.length > 0 && <ul>{config.source.assumptions.map(item => <li key={item}>{item}</li>)}</ul>}</details>}
       <div className="scope-banner"><div className="scope-icon"><CircleHelp size={17} /></div><p><strong>Model scope</strong><span>Seeded weapon-stat duels approximate aim, cadence, damage, reload, range, and movement. This is not a full VALORANT match or player-retention measurement.</span></p><span className="scope-detail">{Object.keys(config.weapons).length} weapons <i /> {config.ranges.join(' / ')}m <i /> {config.strategies.length} playstyles</span></div>
 
@@ -307,7 +308,10 @@ function App() {
                   })}
                 </div>
               )}</div>
-              <div className="form-footer"><label className="seed-control"><span>Seeds per scenario</span><input type="number" min="1" max="100" value={matches} onChange={event => setMatches(event.target.value === '' ? '' : Number(event.target.value))} /><small>Both starting-player orders</small></label>
+              <div className="form-footer"><details className="advanced-settings">
+                <summary><span>Advanced settings</span><span className="advanced-summary-value">{matches === '' ? 'Set seed count' : `${matches} seeds per scenario`}</span><ChevronDown size={15} /></summary>
+                <div className="advanced-settings-content"><label className="seed-control"><span>Seeds per scenario</span><input type="number" min="1" max="100" value={matches} onChange={event => setMatches(event.target.value === '' ? '' : Number(event.target.value))} /><small>Both starting-player orders · default {config.default_matches}</small></label></div>
+              </details>
                 <div className="form-actions">{(profile || config.profile) === 'valorant' && <button type="button" className="button button-quiet" disabled={busy} onClick={() => { reset(); updateValue('spectre', 'damage', 27); }}>Load demo preset</button>}<button type="button" className="button button-quiet" onClick={reset}><RotateCcw size={15} /> Reset</button>
                   <button type="submit" className="button button-primary" disabled={busy}>{busy ? <><LoaderCircle className="spin" size={16} /> Running…</> : <><Sparkles size={16} /> Run balance check <ArrowRight size={15} /></>}</button></div>
               </div>
@@ -371,15 +375,9 @@ function App() {
           </div>}
           {page === 'reports' && run?.status !== 'complete' && <Panel className="empty-report"><div className="overview-icon"><FileBarChart2 size={22} /></div><h2>Your report will appear here</h2><p>Run a balance check to see the guardrails, matchup results, and agent recommendation together.</p><a className="button button-primary" href="#developer">Go to developer lab <ArrowRight size={15} /></a></Panel>}
         </div>
-        <aside className="side-column"><RunLog events={events} running={busy} />
-          <Panel className="method-panel"><div className="method-icon"><FlaskConical size={17} /></div><h3>How to read this</h3>
-            <ul><li><strong>Summary tiles</strong><span>Rounded to two decimal places for a quick scan.</span></li>
-              <li><strong>Matchup details</strong><span>Four decimal places preserve precision on smaller differences.</span></li>
-              <li><strong>Recommendation</strong><span>A passing result is not a guarantee of fun or player retention.</span></li></ul>
-            <div className="method-foot"><Clock3 size={14} /> Seeded, repeatable runs</div>
-          </Panel>
-        </aside>
+        <aside className="side-column"><RunLog events={events} running={busy} /></aside>
       </div>
+      {config.source && <details className="source-details"><summary>Profile source and model assumptions</summary><p>{config.source.source || 'Source unavailable'} {config.source.version && `· ${config.source.version}`} {config.source.retrieved_at && `· retrieved ${config.source.retrieved_at}`}</p>{config.source.damage_context && <p>Damage context: {config.source.damage_context}</p>}{config.source.assumptions?.length > 0 && <ul>{config.source.assumptions.map(item => <li key={item}>{item}</li>)}</ul>}</details>}
       </>}
       <footer className="page-footer"><span><Crosshair size={15} /> RAGENT <i /> DevHacks 2026</span><span>For developer QA · Synthetic simulation only</span></footer>
     </main>

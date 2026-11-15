@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import threading
 from http.server import ThreadingHTTPServer
 from urllib.request import urlopen, Request
@@ -6,6 +7,18 @@ from urllib.error import HTTPError
 from unittest.mock import patch
 
 from ragent_openfire import gemini_client, web
+
+
+def test_bundled_demo_is_ready_for_the_saved_runs_menu():
+    run = web.load_demo_run()
+    assert run["is_demo"] is True
+    assert run["label"] == "Spectre damage tuning"
+    assert run["status"] == "complete"
+    assert run["profile"] == "valorant"
+    assert run["report_url"].endswith("/report")
+    assert run["json_url"].endswith("/json")
+    assert Path(run["report_path"]).is_file()
+    assert json.loads(Path(run["json_path"]).read_text(encoding="utf-8"))["profile"] == "valorant"
 
 
 def test_gemini_fallback_and_invalid_evidence(monkeypatch):

@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import math
+import os
 from pathlib import Path
 import threading
 import uuid
@@ -25,9 +26,30 @@ ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / 'web'
 RESULTS_ROOT = ROOT / 'results'
 STARTER_RUNS_ROOT = ROOT / 'fixtures' / 'starter_runs'
+DEMO_RUN_ID = 'e8c18635e27c470d9b459df4ea520245'
 LOCK = threading.Lock()
 RUNS = {}
 ACTIVE_RUN = None
+
+
+def load_demo_run():
+    demo_root = ROOT / 'docs' / 'recorded-demo'
+    run = json.loads((demo_root / f'run_{DEMO_RUN_ID}.json').read_text(encoding='utf-8'))
+    if run.get('id') != DEMO_RUN_ID or run.get('status') != 'complete' or run.get('profile') != 'valorant':
+        raise ValueError('The bundled VALORANT demo run is invalid')
+    report_path = demo_root / f'developer_report_{DEMO_RUN_ID}.html'
+    json_path = demo_root / f'developer_run_{DEMO_RUN_ID}.json'
+    if not report_path.is_file() or not json_path.is_file():
+        raise FileNotFoundError('The bundled VALORANT demo report is incomplete')
+    run.update({
+        'is_demo': True,
+        'label': 'Spectre damage tuning',
+        'report_path': str(report_path),
+        'json_path': str(json_path),
+        'report_url': f'/runs/{DEMO_RUN_ID}/report',
+        'json_url': f'/runs/{DEMO_RUN_ID}/json',
+    })
+    return run
 
 
 PROFILES = {
@@ -356,18 +378,19 @@ class DeveloperHandler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--port', type=int, default=8765)
+    parser.add_argument('--host', default=os.environ.get('HOST', '127.0.0.1'))
+    parser.add_argument('--port', type=int, default=int(os.environ.get('PORT', '8765')))
     parser.add_argument('--weapons', help='Exported weapon JSON; defaults to the included snapshot')
     parser.add_argument('--policy', help='Balance policy JSON; defaults to the included policy')
     args = parser.parse_args()
     load_inputs(args.weapons, args.policy)
     RUNS.update(load_runs(STARTER_RUNS_ROOT))
     RUNS.update(load_runs(RESULTS_ROOT))
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), DeveloperHandler)
+    RUNS.setdefault(DEMO_RUN_ID, load_demo_run())
+    server = ThreadingHTTPServer((args.host, args.port), DeveloperHandler)
     server.weapons_path = args.weapons
     server.policy_path = args.policy
-    print(f'RAGENT developer UI: http://127.0.0.1:{args.port}')
-    print('Bound to localhost only; press Ctrl+C to stop.')
+    print(f'RAGENT developer UI listening on {args.host}:{args.port}; press Ctrl+C to stop.')
     try:
         server.serve_forever()
     except KeyboardInterrupt:
