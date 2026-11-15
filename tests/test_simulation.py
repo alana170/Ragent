@@ -2,39 +2,20 @@ import json
 import unittest
 from pathlib import Path
 from copy import deepcopy
-from ragent_openfire.weapon_export import extract_weapons
 from ragent_openfire.simulation import duel, run_suite, lookup, balance_violations
 from ragent_openfire.agent import optimize, _change
-from ragent_openfire.cli import update_weapon_db
 from ragent_openfire.reports import format_detail_rate, format_json, format_rate, format_seconds, proposal_html_report
 from ragent_openfire.web import apply_proposed_changes, evaluate_proposal
 
 ROOT=Path(__file__).resolve().parents[1]
-WEAPONS=json.loads((ROOT/'fixtures/openfire_weapons_snapshot.json').read_text())['weapons']
-POLICY=json.loads((ROOT/'configs/openfire_balance_policy.json').read_text())
-GD_SOURCE='''extends Node
-const WEAPONS: Array[Dictionary] = [
-  {"id":"rifle", "model": "some.glb", "damage":17.0, "fire_rate":9.0,
-   "mag_size":30, "range":120.0, "pellets":1, "spread_deg":1.3,
-   "vm_pos":Vector3(0.2, 0.3, 0.4), "reload_time":1.9},
-  {"id":"smg", "damage":12.0,"fire_rate":14.0,"mag_size":25,
-   "range":80.0,"pellets":1,"spread_deg":2.2,"automatic":true}
-]
-'''
-
-class OpenfireBridgeTests(unittest.TestCase):
+WEAPONS=json.loads((ROOT/'tests/fixtures/simulation_weapons.json').read_text())['weapons']
+POLICY=json.loads((ROOT/'tests/fixtures/simulation_policy.json').read_text())
+class SimulationTests(unittest.TestCase):
     def test_report_formats_decimal_values_to_four_places(self):
         self.assertEqual(format_rate(0.123456), '12.35%')
         self.assertEqual(format_detail_rate(0.123456), '12.3456%')
         self.assertEqual(format_seconds(0.123456), '0.1235')
         self.assertEqual(format_json({'rate': 0.123456}), '{\n  "rate": "0.1235"\n}')
-
-    def test_exports_actual_gd_scalars(self):
-        weapons=extract_weapons(GD_SOURCE)
-        self.assertEqual(list(weapons),['rifle','smg'])
-        self.assertEqual(weapons['rifle']['fire_rate'],9.0)
-        self.assertEqual(weapons['rifle']['pellets'],1)
-        self.assertNotIn('vm_pos',weapons['rifle'])
 
     def test_duels_are_deterministic_and_seeded(self):
         x=duel(WEAPONS,'rifle','smg',15,'aggressive',42,'a',True)
@@ -75,18 +56,6 @@ class OpenfireBridgeTests(unittest.TestCase):
         self.assertEqual(report['agent_mode'],'heuristic_no_llm')
         self.assertLess(report['patched_weapons']['smg']['fire_rate'],21.0)
         self.assertGreaterEqual(report['verification']['final_seeds']['start'], 200000)
-
-    def test_godot_source_patch_preserves_rest(self):
-        import tempfile
-        with tempfile.TemporaryDirectory() as d:
-            f=Path(d)/'weapon_db.gd';f.write_text(GD_SOURCE)
-            patched=extract_weapons(GD_SOURCE)
-            patched['smg']['fire_rate']=16.2
-            old,new=update_weapon_db(f,patched)
-            self.assertEqual(extract_weapons(new)['smg']['fire_rate'],16.2)
-            self.assertIn('Vector3(0.2, 0.3, 0.4)',new)
-            self.assertIn('"automatic":true',new)
-            self.assertEqual(extract_weapons(old)['smg']['fire_rate'],14.0)
 
     def test_developer_change_is_bounded_and_does_not_mutate_baseline(self):
         original=deepcopy(WEAPONS)

@@ -1,8 +1,8 @@
 # Demo HTTP API
 
-The loopback server (`python -m ragent_openfire.web`) accepts JSON and keeps credentials server-side. Existing OpenFire requests remain valid; absent `profile` defaults to `openfire`. See [BACKEND_SETUP.md](BACKEND_SETUP.md) and [CONTENT_PROFILE.md](CONTENT_PROFILE.md) for setup and source/approximation details.
+The loopback server (`python -m ragent_openfire.web`) accepts JSON and keeps credentials server-side. An absent `profile` defaults to `valorant`. See [BACKEND_SETUP.md](BACKEND_SETUP.md) and [CONTENT_PROFILE.md](CONTENT_PROFILE.md) for setup and source/approximation details.
 
-- `GET /api/config?profile=valorant` returns `profile`, `profiles`, `source`, `weapons`, `allowed_parameters`, `ranges`, `strategies`, and `default_matches`. `openfire` is the other supported profile.
+- `GET /api/config?profile=valorant` returns `profile`, `profiles`, `source`, `weapons`, `allowed_parameters`, `ranges`, `strategies`, and `default_matches`.
 - `GET /api/content` returns the pinned artwork manifest. `GET /assets/vandal.png` and `/assets/spectre.png` serve only manifest-listed files.
 - `POST /api/runs` starts one run; `409` indicates another is active. Example: `{"profile":"valorant","changes":{"spectre":{"damage":27}},"matches":24,"gemini_enabled":true}`. Response: `202 {"id":"<32 hex characters>","status":"running"}`. `gemini_enabled` defaults to true; false forces offline deterministic behavior.
 - `GET /api/runs` lists saved and active runs. `GET /api/runs/<id>` returns status (`running`, `complete`, `failed`, or `interrupted`), progress `events`, input, profile/policy provenance and, when complete, `result`, `recommendation`, `explanation`, and report URLs. Saved completed runs survive restart; incomplete work becomes interrupted. `GET /runs/<id>/json` and `/runs/<id>/report` download the result and HTML.

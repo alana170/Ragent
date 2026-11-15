@@ -53,11 +53,10 @@ def load_demo_run():
 
 
 PROFILES = {
-    "openfire": ("fixtures/openfire_weapons_snapshot.json", "configs/openfire_balance_policy.json"),
     "valorant": ("fixtures/valorant_weapons_snapshot.json", "configs/valorant_balance_policy.json"),
 }
 
-def load_inputs(weapons_path=None, policy_path=None, profile="openfire"):
+def load_inputs(weapons_path=None, policy_path=None, profile="valorant"):
     if profile not in PROFILES:
         raise ValueError("Unknown profile")
     source_path = Path(weapons_path) if weapons_path else ROOT / PROFILES[profile][0]
@@ -105,7 +104,7 @@ def apply_proposed_changes(weapons, changes, allowed_parameters):
     return updated
 
 
-def evaluate_proposal(weapons, policy, changes, matches, progress=None, profile="openfire", seed_offset=0, gemini_enabled=True):
+def evaluate_proposal(weapons, policy, changes, matches, progress=None, profile="valorant", seed_offset=0, gemini_enabled=True):
     if isinstance(matches, bool) or not isinstance(matches, int) or not 1 <= matches <= 100:
         raise ValueError('matches must be a whole number from 1 to 100')
     proposed = apply_proposed_changes(weapons, changes, policy['allowed_parameters'])
@@ -288,7 +287,7 @@ class DeveloperHandler(BaseHTTPRequestHandler):
             return
         if path == '/api/config':
             try:
-                profile = parse_qs(urlsplit(self.path).query).get('profile', ['openfire'])[0]
+                profile = parse_qs(urlsplit(self.path).query).get('profile', ['valorant'])[0]
                 _document, weapons, policy = load_inputs(self.server.weapons_path, self.server.policy_path, profile)
                 self._json(200, {'profile': profile, 'profiles': list(PROFILES), 'source': _document, 'weapons': weapons, 'allowed_parameters': policy['allowed_parameters'],
                                  'ranges': policy.get('ranges', [5, 15, 35]),
@@ -345,7 +344,7 @@ class DeveloperHandler(BaseHTTPRequestHandler):
         try:
             payload = json.loads(self.rfile.read(int(length)))
             if not isinstance(payload, dict): raise ValueError('Request body must be a JSON object')
-            profile = payload.get('profile', 'openfire')
+            profile = payload.get('profile', 'valorant')
             if not isinstance(profile, str): raise ValueError('profile must be a string')
             gemini_enabled = payload.get('gemini_enabled', True)
             if not isinstance(gemini_enabled, bool): raise ValueError('gemini_enabled must be a boolean')

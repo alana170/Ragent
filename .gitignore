@@ -2,8 +2,6 @@ __pycache__/
 *.py[cod]
 node_modules/
 results/*
-!results/example.json
-!results/example.csv
 .pytest_cache/
 .venv/
 
